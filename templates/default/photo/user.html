@@ -17,6 +17,9 @@
                 <input type="text" value="" id="addalbumtitle" placeholder="相册标题" style="width:300px; padding: 5px;">
             </div>
             <div style="line-height: 60px;">
+                <textarea id="addalbumdesc" style="width: 300px;height: 100px;padding: 5px;" placeholder="相册说明"></textarea>
+            </div>
+            <div style="line-height: 60px;">
                 <button id="btnOkAddAlbum">确定</button>
                 <button id="btnCancelAddAlbum">取消</button>
             </div>
@@ -59,6 +62,12 @@
 	        </div>
 	        {/if}
             <div class="clear"></div>
+            {if strlen($album.desc)}
+            <div class="left" style="line-height: 22px;font-size: 14px;">
+                {$album.desc}
+            </div>
+            <div class="clear"></div>
+            {/if}
 	        <div class="digestphotodiv">
 		        {foreach $album.digest as $digest}
 		        <div class="left" style="width: 60px;height: 60px;">
@@ -93,7 +102,8 @@
         });
         $('body').delegate('#btnOkAddAlbum', 'click', function(){
             var title = $('#addalbumtitle').val();
-            $.post('/rest/photo/album/', {'update':{'title':title}}, function(data, status){
+            var desc = $('#addalbumdesc').val();
+            $.post('/rest/photo/album/', {'update':{'title':title, 'desc':desc}}, function(data, status){
                 if (data.errno) {
                     alert(data.error);
                 } else {

@@ -12,9 +12,13 @@ class KPhoto_Api extends Ko_Busi_Api
 		$albumids = Ko_Tool_Utils::AObjs2ids($list, 'albumid');
 		$infos = $this->albumDao->aGetDetails($list);
 		$contentApi = new KContent_Api();
-		$aText = $contentApi->aGetText(KContent_Api::PHOTO_ALBUM_TITLE, $albumids);
+		$aText = $contentApi->aGetTextEx(array(
+			KContent_Api::PHOTO_ALBUM_TITLE => $albumids,
+			KContent_Api::PHOTO_ALBUM_DESC => $albumids,
+		));
 		foreach ($infos as &$v) {
-			$v['title'] = $aText[$v['albumid']];
+			$v['title'] = $aText[KContent_Api::PHOTO_ALBUM_TITLE][$v['albumid']];
+			$v['desc'] = $aText[KContent_Api::PHOTO_ALBUM_DESC][$v['albumid']];
 		}
 		unset($v);
 		return $infos;
@@ -69,7 +73,12 @@ class KPhoto_Api extends Ko_Busi_Api
 		$info = $this->albumDao->aGet($albumkey);
 		if (!empty($info)) {
 			$contentApi = new KContent_Api();
-			$info['title'] = $contentApi->sGetText(KContent_Api::PHOTO_ALBUM_TITLE, $albumid);
+			$aText = $contentApi->aGetTextEx(array(
+				KContent_Api::PHOTO_ALBUM_TITLE => array($albumid),
+				KContent_Api::PHOTO_ALBUM_DESC => array($albumid),
+			));
+			$info['title'] = $aText[KContent_Api::PHOTO_ALBUM_TITLE][$albumid];
+			$info['desc'] = $aText[KContent_Api::PHOTO_ALBUM_DESC][$albumid];
 			$info['isrecycle'] = $info['albumid'] == $this->_getRecycleAlbumid($uid);
 		}
 		return $info;
@@ -224,10 +233,14 @@ class KPhoto_Api extends Ko_Busi_Api
 		$albumlist = $this->albumDao->aGetList($option);
 		$albumids = Ko_Tool_Utils::AObjs2ids($albumlist, 'albumid');
 		$contentApi = new KContent_Api();
-		$aText = $contentApi->aGetText(KContent_Api::PHOTO_ALBUM_TITLE, $albumids);
+		$aText = $contentApi->aGetTextEx(array(
+			KContent_Api::PHOTO_ALBUM_TITLE => $albumids,
+			KContent_Api::PHOTO_ALBUM_DESC => $albumids,
+		));
 		$recycleid = $this->_getRecycleAlbumid($uid);
 		foreach ($albumlist as &$v) {
-			$v['title'] = $aText[$v['albumid']];
+			$v['title'] = $aText[KContent_Api::PHOTO_ALBUM_TITLE][$v['albumid']];
+			$v['desc'] = $aText[KContent_Api::PHOTO_ALBUM_DESC][$v['albumid']];
 			$v['isrecycle'] = $v['albumid'] == $recycleid;
 		}
 		unset($v);
@@ -259,11 +272,15 @@ class KPhoto_Api extends Ko_Busi_Api
 		unset($v);
 		$photoinfos = $this->photoDao->aGetDetails($allphotoids);
 		$contentApi = new KContent_Api();
-		$aText = $contentApi->aGetText(KContent_Api::PHOTO_ALBUM_TITLE, $albumids);
+		$aText = $contentApi->aGetTextEx(array(
+			KContent_Api::PHOTO_ALBUM_TITLE => $albumids,
+			KContent_Api::PHOTO_ALBUM_DESC => $albumids,
+		));
 		$recycleid = $this->_getRecycleAlbumid($uid);
 		$storageApi = new KStorage_Api();
 		foreach ($albumlist as &$v) {
-			$v['title'] = $aText[$v['albumid']];
+			$v['title'] = $aText[KContent_Api::PHOTO_ALBUM_TITLE][$v['albumid']];
+			$v['desc'] = $aText[KContent_Api::PHOTO_ALBUM_DESC][$v['albumid']];
 			$v['isrecycle'] = $v['albumid'] == $recycleid;
 			$v['digest'] = $digest[$v['albumid']];
 			foreach ($v['digest'] as &$vv) {
@@ -439,12 +456,12 @@ class KPhoto_Api extends Ko_Busi_Api
 		return $photoid;
 	}
 
-	public function addAlbum($uid, $title)
+	public function addAlbum($uid, $title, $desc)
 	{
 		if (!$uid) {
 			return 0;
 		}
-		return $this->_addAlbum($uid, $title);
+		return $this->_addAlbum($uid, $title, $desc);
 	}
 
 	private function _getRecycleAlbumid($uid)
@@ -465,7 +482,7 @@ class KPhoto_Api extends Ko_Busi_Api
 			}
 			$this->albumtagDao->iDelete($albumtagkey);
 		}
-		$albumid = $this->_addAlbum($uid, $albumtitle);
+		$albumid = $this->_addAlbum($uid, $albumtitle, '');
 		if ($albumid) {
 			$data = compact('uid', 'albumtag', 'albumid');
 			$data['ctime'] = date('Y-m-d H:i:s');
@@ -474,7 +491,7 @@ class KPhoto_Api extends Ko_Busi_Api
 		return $albumid;
 	}
 
-	private function _addAlbum($uid, $title)
+	private function _addAlbum($uid, $title, $desc)
 	{
 		$time = time();
 		$data = array(
@@ -487,6 +504,7 @@ class KPhoto_Api extends Ko_Busi_Api
 		if ($albumid) {
 			$contentApi = new KContent_Api();
 			$contentApi->bSet(KContent_Api::PHOTO_ALBUM_TITLE, $albumid, $title);
+			$contentApi->bSet(KContent_Api::PHOTO_ALBUM_DESC, $albumid, $desc);
 		}
 		return $albumid;
 	}

@@ -20,6 +20,7 @@ class KRest_Photo_album
 		'poststylelist' => array(
 			'default' => array('hash', array(
 				'title' => 'string',
+				'desc' => 'string',
 			)),
 		),
 		'putstylelist' => array(
@@ -43,7 +44,7 @@ class KRest_Photo_album
 		$uid = $loginApi->iGetLoginUid();
 
 		$photoApi = new KPhoto_Api();
-		$albumid = $photoApi->addAlbum($uid, $update['title']);
+		$albumid = $photoApi->addAlbum($uid, $update['title'], $update['desc']);
 		if (!$albumid) {
 			throw new Exception('添加相册失败', 1);
 		}
