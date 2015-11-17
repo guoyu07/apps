@@ -25,6 +25,7 @@ class KRest_Photo_album
 		),
 		'putstylelist' => array(
 			'title' => 'string',
+			'desc' => 'string',
 		),
 	);
 
@@ -64,6 +65,9 @@ class KRest_Photo_album
 		{
 			case 'title':
 				$photoApi->changeAlbumTitle($uid, $id['albumid'], $update);
+				break;
+			case 'desc':
+				$photoApi->changeAlbumDesc($uid, $id['albumid'], $update);
 				break;
 		}
 		return array('key' => $id);

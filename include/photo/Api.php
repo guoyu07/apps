@@ -355,6 +355,24 @@ class KPhoto_Api extends Ko_Busi_Api
 		return $contentApi->bSet(KContent_Api::PHOTO_ALBUM_TITLE, $albumid, $title);
 	}
 
+	public function changeAlbumDesc($uid, $albumid, $desc)
+	{
+		if (!$uid) {
+			return false;
+		}
+		$recycleid = $this->_getRecycleAlbumid($uid);
+		if ($albumid == $recycleid) {
+			return false;
+		}
+		$albumkey = compact('uid', 'albumid');
+		$album = $this->albumDao->aGet($albumkey);
+		if (empty($album)) {
+			return false;
+		}
+		$contentApi = new KContent_Api();
+		return $contentApi->bSet(KContent_Api::PHOTO_ALBUM_DESC, $albumid, $desc);
+	}
+
 	public function deletePhoto($uid, $photoid)
 	{
 		if (!$uid) {

@@ -57,16 +57,23 @@
             </div>
 	        {if $logininfo.uid == $userinfo.uid && !$album.isrecycle}
 	        <div class="right" style="height: 40px;line-height: 40px;font-size: 12px;color: #aaaaaa;">
-		        <a href="javascript:;" class="changeAlbumTitle">修改标题</a> |
+                <a href="javascript:;" class="changeAlbumTitle">修改标题</a> |
+                <a href="javascript:;" class="changeAlbumDesc">修改说明</a> |
 		        <a href="javascript:;" class="delAlbum">删除</a>
 	        </div>
 	        {/if}
             <div class="clear"></div>
-            {if strlen($album.desc)}
-            <div class="left" style="line-height: 22px;font-size: 14px;">
-                {$album.desc}
+            <div class="txtAlbumdesc" style="line-height: 22px;font-size: 14px;">{$album.desc}</div>
+            {if $logininfo.uid == $userinfo.uid && !$album.isrecycle}
+            <div class="hide inputAlbumdesc" style="line-height: 22px;font-size: 14px;">
+                <div class="left">
+                    <textarea style="width: 300px;height: 100px;padding: 5px;" placeholder="相册说明">{$album.desc}</textarea>
+                </div>
+                <div class="left" style="margin-left: 4px;">
+                    <button class="btnSaveAlbumDesc small">保存</button>
+                </div>
+                <div class="clear"></div>
             </div>
-            <div class="clear"></div>
             {/if}
 	        <div class="digestphotodiv">
 		        {foreach $album.digest as $digest}
@@ -156,6 +163,51 @@
                 root.find('.txtAlbumtitle').show();
                 root.find('.inputAlbumtitle').hide();
                 root.find('.inputAlbumtitle input').val(root.find('.txtAlbumtitle').text());
+            }
+        });
+    })();
+
+    (function(){
+        //修改相册说明
+        function saveAlbumDesc(root) {
+            var oldVal = root.find('.txtAlbumdesc').text();
+            var newVal = root.find('.inputAlbumdesc textarea').val();
+            if (oldVal != newVal) {
+                var uid = $('#userdata').data('uid');
+                var albumid = root.data('albumid');
+                $.post('/rest/photo/album/' + uid + '_' + albumid,
+                    {'method':'PUT', 'put_style':'desc', 'update': newVal},
+                    function(data, status){
+                        if (data.errno) {
+                            alert(data.error);
+                        } else {
+                            root.find('.txtAlbumdesc').text(newVal);
+                            root.find('.txtAlbumdesc').show();
+                            root.find('.inputAlbumdesc').hide();
+                        }
+                    }, 'json');
+            } else {
+                root.find('.txtAlbumdesc').show();
+                root.find('.inputAlbumdesc').hide();
+            }
+        }
+        $('body').delegate('.btnSaveAlbumDesc', 'click', function() {
+            var root = $(this).closest('.albumdiv');
+            saveAlbumDesc(root);
+        });
+        $('body').delegate('.changeAlbumDesc', 'click', function() {
+            var root = $(this).closest('.albumdiv');
+            root.find('.txtAlbumdesc').hide();
+            var input = root.find('.inputAlbumdesc');
+            input.show();
+            input.find('textarea').focus();
+        });
+        $('body').delegate('#albumlist .inputAlbumdesc', 'keydown', function(e){
+            var root = $(this).closest('.albumdiv');
+            if (27 == e.keyCode) {
+                root.find('.txtAlbumdesc').show();
+                root.find('.inputAlbumdesc').hide();
+                root.find('.inputAlbumdesc textarea').val(root.find('.txtAlbumdesc').text());
             }
         });
     })();

@@ -9,7 +9,7 @@ a:link,a:visited {color: #cccccc;}
 a:hover,a:active {color: #ffffff;}
 button {background-color: #E9E7EF;cursor:pointer;padding: 10px;}
 button.small {padding: 5px 10px 5px 10px;font-size: 14px;}
-input[type=text],input[type=password] {outline: solid 1px #999999;padding: 0 5px 0 5px;}
+input[type=text],input[type=password],textarea {outline: solid 1px #999999;padding: 0 5px 0 5px;}
 
 body {width:1200px;background:#666666;font-family:arial,sans-serif;font-size:16px;margin:0 auto;padding: 0 auto;}
 
