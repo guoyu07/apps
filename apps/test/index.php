@@ -6,6 +6,6 @@
 	<link href="http://img.zhangchu.cc/css/reset.css" rel="stylesheet">
 </head>
 <body>
-<img src="http://7xawfx.com1.z0.glb.clouddn.com/Fn4VeEKcTzlutRym1FNd5Z8iQndv?imageView2/0/w/800">
+123
 </body>
 </html>
