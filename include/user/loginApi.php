@@ -46,14 +46,18 @@ class KUser_loginApi extends Ko_Mode_User
 
 	public function iOauth2Login($sSrc)
 	{
-		$aTokeninfo = $this->oauth2_Api->aGetTokenInfo($sSrc);
-		if (!$this->oauth2_Api->bGetUserinfoByTokeninfo($sSrc, $aTokeninfo, $sUsername, $aUserinfo)) {
+		$data = Ko_Apps_Rest::VInvoke('user\\oauth2', 'GET', 'login/'.$sSrc, null, $errno);
+		if ($errno) {
 			return 0;
 		}
-		$uid = $this->_iGetExternalUid($sUsername, $sSrc);
+		$uid = $this->_iGetExternalUid($data['username'], $sSrc);
 		if ($uid) {
-			$this->oauth2_Api->bSaveUserToken($sSrc, $uid, $aTokeninfo);
-			$this->baseinfoApi->bUpdateOauth2info($uid, $aUserinfo);
+			Ko_Apps_Rest::VInvoke('user\\oauth2', 'POST', 'token/', array(
+				'src' => $sSrc,
+				'uid' => $uid,
+				'tokeninfo' => $data['tokeninfo'],
+			));
+			$this->baseinfoApi->bUpdateOauth2info($uid, $data['userinfo']);
 		}
 		return $uid;
 	}

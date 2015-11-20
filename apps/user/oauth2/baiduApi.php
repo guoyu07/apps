@@ -1,6 +1,8 @@
 <?php
 
-class KUser_Oauth2_baiduApi extends Ko_Busi_Api
+namespace APPS\user\oauth2;
+
+class MbaiduApi extends \Ko_Busi_Api
 {
 	public function bGetUserinfoByTokeninfo($aSrcConf, $aTokeninfo, &$sUsername, &$aUserinfo)
 	{

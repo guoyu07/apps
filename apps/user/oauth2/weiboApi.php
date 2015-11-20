@@ -1,6 +1,8 @@
 <?php
 
-class KUser_Oauth2_weiboApi extends Ko_Busi_Api
+namespace APPS\user\oauth2;
+
+class MweiboApi extends \Ko_Busi_Api
 {
 	public function bGetUserinfoByTokeninfo($aSrcConf, $aTokeninfo, &$sUsername, &$aUserinfo)
 	{

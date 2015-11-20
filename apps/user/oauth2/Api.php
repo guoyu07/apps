@@ -1,6 +1,8 @@
 <?php
 
-class KUser_Oauth2_Api extends Ko_Mode_OAuth2Client
+namespace APPS\user\oauth2;
+
+class MApi extends \Ko_Mode_OAuth2Client
 {
 	protected $_aConf = array(
 		'usertoken' => 'usertoken',
@@ -47,10 +49,10 @@ class KUser_Oauth2_Api extends Ko_Mode_OAuth2Client
 		switch($sSrc)
 		{
 		case 'qq':
-			$fnGetToken = array('KUser_Oauth2_qqApi', 'AGetAccessToken');
+			$fnGetToken = array('APPS\\user\\oauth2\\MqqApi', 'AGetAccessToken');
 			break;
 		case 'weibo':
-			$fnGetToken = array('KUser_Oauth2_weiboApi', 'AGetAccessToken');
+			$fnGetToken = array('APPS\\user\\oauth2\\MweiboApi', 'AGetAccessToken');
 			break;
 		case 'baidu':
 			$fnGetToken = 'file_get_contents';

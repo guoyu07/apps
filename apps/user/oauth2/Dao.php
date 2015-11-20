@@ -1,6 +1,8 @@
 <?php
 
-class KUser_Oauth2_Dao extends Ko_Dao_Factory
+namespace APPS\user\oauth2;
+
+class MDao extends \Ko_Dao_Factory
 {
 	protected $_aDaoConf = array(
 		'usertoken' => array(
