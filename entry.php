@@ -14,6 +14,8 @@ define('COMMON_RUNDATA_PATH', CODE_ROOT . 'apps/rundata/');
 define('KO_DEBUG', 1);
 define('KO_TEMPDIR', COMMON_RUNDATA_PATH . 'kotmp/');
 define('KO_INCLUDE_DIR', COMMON_CLASS_PATH);
+define('KO_APPS_DIR', CODE_ROOT.'apps/apps/');
+define('KO_APPS_NS', 'APPS');
 //mysql -hrdsuurafiuurafi.mysql.rds.aliyuncs.com -udemo -pdemodemo demo
 define('KO_DB_HOST', 'rdsuurafiuurafi.mysql.rds.aliyuncs.com');
 define('KO_DB_USER', 'demo');

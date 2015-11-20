@@ -1,3 +1,16 @@
+<?php
+
+namespace APPS\test;
+
+class MHtdocs_index
+{
+	public static function test()
+	{
+		echo 'index';
+	}
+}
+
+?>
 <!doctype html>
 <html>
 <head>
