@@ -64,9 +64,38 @@ Ko_Web_Event::On('ko.error', '500', function ($errno, $errstr, $errfile, $errlin
 	exit;
 });
 
+function image_AAdapter($datalist)
+{
+	$newdatalist = array();
+	$dests_withsize = array();
+	foreach ($datalist as $v) {
+		if (strlen($v[0]) && isset($v[1]['withsize']) && $v[1]['withsize']) {
+			$dests_withsize[] = $v[0];
+		}
+	}
+	$sizes = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/',
+		array('filter' => $dests_withsize, 'data_style' => 'size_brief'));
+	$sizes = $sizes['list'];
+	foreach ($datalist as $k => $v) {
+		$newdatalist[$k] = array();
+		if (strlen($v[0])) {
+			if (isset($sizes[$v[0]])) {
+				$newdatalist[$k]['size'] = $sizes[$v[0]];
+			}
+			if (isset($v[1]['brief'])) {
+				$newdatalist[$k]['brief'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$v[0], array('data_decorate' => $v[1]['brief']));
+			} else if (isset($v[1]['briefCallback'])) {
+				$brief = call_user_func($v[1]['briefCallback'], $newdatalist[$k]);
+				$newdatalist[$k]['brief'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$v[0], array('data_decorate' => $brief));
+			}
+		}
+	}
+	return $newdatalist;
+}
+
 Ko_Web_Event::On('ko.dispatch', 'before', function () {
 	Ko_Tool_Adapter::VOn('user_baseinfo', array('KUser_baseinfoApi', 'AAdapter'));
-	Ko_Tool_Adapter::VOn('image_baseinfo', array('KStorage_Api', 'AAdapter'));
+	Ko_Tool_Adapter::VOn('image_baseinfo', 'image_AAdapter');
 	$appname = Ko_Web_Config::SGetAppName();
 	if ('zc' === $appname) {
 		$_GET['uid'] = 20;

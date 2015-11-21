@@ -58,7 +58,6 @@ Ko_Web_Route::VGet('item', function () {
 	$uid = Ko_Web_Request::IGet('uid');
 	$photoid = Ko_Web_Request::IGet('photoid');
 
-	$storageApi = new KStorage_Api();
 	$photoApi = new KPhoto_Api();
 	$photoinfo = $photoApi->getPhotoInfo($uid, $photoid);
 	if (empty($photoinfo)) {
@@ -66,15 +65,15 @@ Ko_Web_Route::VGet('item', function () {
 		Ko_Web_Response::VSend();
 		exit;
 	}
-	$photoinfo['image_src'] = $storageApi->sGetUrl($photoinfo['image'], '');
-	$photoinfo['image_small'] = $storageApi->sGetUrl($photoinfo['image'], 'imageView2/1/w/60');
-	$photoinfo['image_exif'] = $storageApi->aGetImageExif($photoinfo['image']);
+	$photoinfo['image_src'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$photoinfo['image'], array('data_decorate' => ''));
+	$photoinfo['image_small'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$photoinfo['image'], array('data_decorate' => 'imageView2/1/w/60'));
+	$photoinfo['image_exif'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$photoinfo['image'], array('data_style' => 'exif'));
 	$agentinfo = KUser_agentApi::get();
 	if ($agentinfo['screen']['height'] < 1000) {
-		$photoinfo['image'] = $storageApi->sGetUrl($photoinfo['image'], 'imageView2/2/w/600/h/600');
+		$photoinfo['image'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$photoinfo['image'], array('data_decorate' => 'imageView2/2/w/600/h/600'));
 		$photoinfo['imagesize'] = 600;
 	} else {
-		$photoinfo['image'] = $storageApi->sGetUrl($photoinfo['image'], 'imageView2/2/w/800/h/800');
+		$photoinfo['image'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$photoinfo['image'], array('data_decorate' => 'imageView2/2/w/800/h/800'));
 		$photoinfo['imagesize'] = 800;
 	}
 	$albuminfo = $photoApi->getAlbumInfo($uid, $photoinfo['albumid']);
@@ -88,7 +87,7 @@ Ko_Web_Route::VGet('item', function () {
 	$prevlist = $nextlist = array();
 	$curinfo = $photoinfo;
 	while (!empty($curinfo = $photoApi->getPrevPhotoInfo($curinfo))) {
-		$curinfo['image'] = $storageApi->sGetUrl($curinfo['image'], 'imageView2/1/w/60');
+		$curinfo['image'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$curinfo['image'], array('data_decorate' => 'imageView2/1/w/60'));
 		array_unshift($prevlist, $curinfo);
 		if (count($prevlist) >= 4) {
 			break;
@@ -96,7 +95,7 @@ Ko_Web_Route::VGet('item', function () {
 	}
 	$curinfo = $photoinfo;
 	while (!empty($curinfo = $photoApi->getNextPhotoInfo($curinfo))) {
-		$curinfo['image'] = $storageApi->sGetUrl($curinfo['image'], 'imageView2/1/w/60');
+		$curinfo['image'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$curinfo['image'], array('data_decorate' => 'imageView2/1/w/60'));
 		array_push($nextlist, $curinfo);
 		if (count($nextlist) >= 15 - count($prevlist)) {
 			break;
@@ -105,7 +104,7 @@ Ko_Web_Route::VGet('item', function () {
 	if (!empty($prevlist) && count($prevlist) + count($nextlist) < 15) {
 		$curinfo = $prevlist[0];
 		while (!empty($curinfo = $photoApi->getPrevPhotoInfo($curinfo))) {
-			$curinfo['image'] = $storageApi->sGetUrl($curinfo['image'], 'imageView2/1/w/60');
+			$curinfo['image'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$curinfo['image'], array('data_decorate' => 'imageView2/1/w/60'));
 			array_unshift($prevlist, $curinfo);
 			if (count($prevlist) >= 15 - count($nextlist)) {
 				break;

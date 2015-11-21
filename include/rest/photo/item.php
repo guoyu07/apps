@@ -70,10 +70,17 @@ class KRest_Photo_item
 	public function post($update, $after = null, $post_style = 'default')
 	{
 		$file = Ko_Web_Request::AFile('file');
-		$api = new KStorage_Api;
-		if (!$api->bUpload2Storage($file, $image)) {
+		$data = Ko_Apps_Rest::VInvoke('storage', 'POST', 'item/', array(
+			'post_style' => 'upload',
+			'update' => array(
+				'file' => $file,
+			),
+		), $error);
+		if ($error)
+		{
 			throw new Exception('文件上传失败', 1);
 		}
+		$image = $data['key'];
 		$title = $file['name'];
 
 		$loginApi = new KUser_loginApi();
@@ -96,7 +103,7 @@ class KRest_Photo_item
 			switch ($after['style']) {
 				default:
 					$data['after'] = $photoApi->getPhotoInfo($uid, $photoid);
-					$data['after']['image'] = $api->sGetUrl($image, $after['decorate']);
+					$data['after']['image'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$image, array('data_decorate' => $after['decorate']));
 					break;
 			}
 		}

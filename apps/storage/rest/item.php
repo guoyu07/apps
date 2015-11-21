@@ -8,7 +8,13 @@ class MRest_item
 		'unique' => 'string',
 		'stylelist' => array(
 			'default' => 'string',
+			'content' => 'string',
 			'size' => array('hash', array(
+				'width' => 'int',
+				'height' => 'int',
+			)),
+			'exif' => 'any',
+			'size_brief' => array('hash', array(
 				'brief' => 'string',
 				'size' => array('hash', array(
 					'width' => 'int',
@@ -19,11 +25,34 @@ class MRest_item
 		'filterstylelist' => array(
 			'default' => array('list', 'string'),
 		),
+		'poststylelist' => array(
+			'upload' => array('hash', array(
+				'file' => 'any',
+				'notonlyimage' => 'bool',
+			)),
+			'content' => array('hash', array(
+				'content' => 'string',
+				'notonlyimage' => 'bool',
+			)),
+			'weburl' => array('hash', array(
+				'url' => 'string',
+				'notonlyimage' => 'bool',
+			)),
+		),
 	);
 
 	public function get($id, $style = null)
 	{
 		$api = new MApi();
+		switch($style['style'])
+		{
+			case 'content':
+				return $api->sRead($id);
+			case 'exif':
+				return $api->aGetImageExif($id);
+			case 'size':
+				return $api->aGetImageSize($id);
+		}
 		return $api->sGetUrl($id, $style['decorate']);
 	}
 
@@ -35,7 +64,7 @@ class MRest_item
 			case 'default':
 				switch ($style['style'])
 				{
-					case 'size':
+					case 'size_brief':
 						$sizes = $api->aGetImagesSize($filter);
 						foreach ($sizes as $k => &$v)
 						{
@@ -51,5 +80,31 @@ class MRest_item
 				break;
 		}
 		return array('list' => array());
+	}
+
+	public function post($update, $after_style = null, $post_style = 'default')
+	{
+		$api = new MApi();
+		switch ($post_style)
+		{
+			case 'upload':
+				if (!$api->bUpload2Storage($update['file'], $sDest, !$update['notonlyimage']))
+				{
+					throw new \Exception('文件上传失败', 1);
+				}
+				return array('key' => $sDest);
+			case 'content':
+				if (!$api->bContent2Storage($update['content'], $sDest, !$update['notonlyimage']))
+				{
+					throw new \Exception('文件上传失败', 1);
+				}
+				return array('key' => $sDest);
+			case 'weburl':
+				if (!$api->bWebUrl2Storage($update['url'], $sDest, !$update['notonlyimage']))
+				{
+					throw new \Exception('文件上传失败', 1);
+				}
+				return array('key' => $sDest);
+		}
 	}
 }

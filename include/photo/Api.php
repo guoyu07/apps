@@ -115,7 +115,7 @@ class KPhoto_Api extends Ko_Busi_Api
 		$aText = $contentApi->aGetText(KContent_Api::PHOTO_TITLE, $photoids);
 		$images = Ko_Tool_Utils::AObjs2ids($photolist, 'image');
 		$sizes = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/',
-			array('filter' => $images, 'data_style' => 'size', 'data_decorate' => $decorate));
+			array('filter' => $images, 'data_style' => 'size_brief', 'data_decorate' => $decorate));
 		foreach ($photolist as $k => &$v) {
 			$v['size'] = $sizes['list'][$v['image']]['size'];
 			$v['image'] = $sizes['list'][$v['image']]['brief'];

@@ -65,10 +65,15 @@ class KUser_baseinfoApi extends Ko_Mode_Item
 			);
 			if (strlen($userinfo['logo']))
 			{
-				$api = new KStorage_Api;
-				if ($api->bWebUrl2Storage($userinfo['logo'], $logo))
+				$sdata = Ko_Apps_Rest::VInvoke('storage', 'POST', 'item/', array(
+					'post_style' => 'weburl',
+					'update' => array(
+						'url' => $userinfo['logo'],
+					),
+				), $errno);
+				if (!$errno)
 				{
-					$data['logo'] = $logo;
+					$data['logo'] = $sdata['key'];
 				}
 			}
 			$this->aInsert($data, $data);

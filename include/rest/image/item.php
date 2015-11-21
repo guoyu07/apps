@@ -15,18 +15,22 @@ class KRest_Image_item
 	public function post($update, $after = null)
 	{
 		$file = Ko_Web_Request::AFile('file');
-		$api = new KStorage_Api;
-		if (!$api->bUpload2Storage($file, $sDest))
+		$data = Ko_Apps_Rest::VInvoke('storage', 'POST', 'item/', array(
+			'post_style' => 'upload',
+			'update' => array(
+				'file' => $file,
+			),
+		), $error);
+		if ($error)
 		{
 			throw new Exception('文件上传失败', 1);
 		}
-		$data = array('key' => $sDest);
 		if (is_array($after))
 		{
 			switch($after['style'])
 			{
 				default:
-					$data['after'] = $api->sGetUrl($sDest, $after['decorate']);
+					$data['after'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$data['key'], array('data_decorate' => $after['decorate']));
 					break;
 			}
 		}

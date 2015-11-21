@@ -22,8 +22,7 @@ class KRest_User_logo
 
 	public function post($update, $after = null)
 	{
-		$api = new KStorage_Api;
-		$content = $api->sRead($update['fileid']);
+		$content = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$update['fileid'], array('data_style' => 'content'));
 		if ('' === $content)
 		{
 			throw new Exception('获取原文件失败', 1);
@@ -47,10 +46,18 @@ class KRest_User_logo
 		{
 			throw new Exception('文件转换失败', 3);
 		}
-		if (!$api->bContent2Storage($dst, $logoid))
+		$data = Ko_Apps_Rest::VInvoke('storage', 'POST', 'item/', array(
+			'post_style' => 'content',
+			'update' => array(
+				'content' => $dst,
+			),
+		), $errno);
+		if ($errno)
 		{
 			throw new Exception('文件保存失败', 3);
 		}
+		$logoid = $data['key'];
+
 		$loginApi = new KUser_loginApi;
 		$baseinfoApi = new KUser_baseinfoApi;
 		$baseinfoApi->bUpdateLogo($loginApi->iGetLoginUid(), $logoid);
