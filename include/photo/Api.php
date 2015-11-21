@@ -113,12 +113,12 @@ class KPhoto_Api extends Ko_Busi_Api
 		$photoids = Ko_Tool_Utils::AObjs2ids($photolist, 'photoid');
 		$contentApi = new KContent_Api();
 		$aText = $contentApi->aGetText(KContent_Api::PHOTO_TITLE, $photoids);
-		$api = new KStorage_Api;
 		$images = Ko_Tool_Utils::AObjs2ids($photolist, 'image');
-		$sizes = $api->aGetImagesSize($images);
+		$sizes = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/',
+			array('filter' => $images, 'data_style' => 'size', 'data_decorate' => $decorate));
 		foreach ($photolist as $k => &$v) {
-			$v['size'] = $sizes[$v['image']];
-			$v['image'] = $api->sGetUrl($v['image'], $decorate);
+			$v['size'] = $sizes['list'][$v['image']]['size'];
+			$v['image'] = $sizes['list'][$v['image']]['brief'];
 			$v['title'] = $aText[$v['photoid']];
 
 			$update = array();
@@ -277,7 +277,6 @@ class KPhoto_Api extends Ko_Busi_Api
 			KContent_Api::PHOTO_ALBUM_DESC => $albumids,
 		));
 		$recycleid = $this->_getRecycleAlbumid($uid);
-		$storageApi = new KStorage_Api();
 		foreach ($albumlist as &$v) {
 			$v['title'] = $aText[KContent_Api::PHOTO_ALBUM_TITLE][$v['albumid']];
 			$v['desc'] = $aText[KContent_Api::PHOTO_ALBUM_DESC][$v['albumid']];
@@ -285,7 +284,7 @@ class KPhoto_Api extends Ko_Busi_Api
 			$v['digest'] = $digest[$v['albumid']];
 			foreach ($v['digest'] as &$vv) {
 				$vv = $photoinfos[$vv];
-				$vv['image'] = $storageApi->sGetUrl($vv['image'], 'imageView2/1/w/60');
+				$vv['image'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$vv['image'], array('data_decorate' => 'imageView2/1/w/60'));
 			}
 			unset($vv);
 		}

@@ -16,7 +16,7 @@ Ko_Web_Route::VGet('user', function () {
 	$taginfos = $blogApi->aGetAllTaginfo($uid);
 	$bloglist = $blogApi->aGetBlogList($uid, $tag, ($page - 1) * $num, $num, $total);
 	if (empty($bloglist)) {
-		if (strlen($tag)) {
+		if ('全部' !== $tag) {
 			if (1 == $page) {
 				Ko_Web_Response::VSetRedirect('?uid='.$uid);
 			} else {

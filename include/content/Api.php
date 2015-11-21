@@ -43,11 +43,11 @@ class KContent_Api extends Ko_Mode_Content
 	
 	protected function _sDataUrl2Link($sData)
 	{
-		$api = new KStorage_Api;
-		if ($api->bContent2Storage($sData, $sDest))
+		$data = Ko_Apps_Rest::VInvoke('storage', 'POST', 'dataurl/', array('update' => $sData), $errno);
+		if ($errno)
 		{
-			return $api->sGetUrl($sDest, 'imageView2/2/w/600/h/600');
+			return parent::_sDataUrl2Link($sData);
 		}
-		return parent::_sDataUrl2Link($sData);
+		return $data['key'];
 	}
 }

@@ -73,7 +73,6 @@ class KBlog_Api extends Ko_Busi_Api
 			}
 		}
 		$infos = $this->blogDao->aGetDetails($list);
-		$storageApi = new KStorage_Api();
 		foreach ($list as $k => &$v) {
 			$update = array();
 			if ($k != 0) {
@@ -99,7 +98,7 @@ class KBlog_Api extends Ko_Busi_Api
 			}
 			$v = $infos[$v['blogid']];
 			if (strlen($v['cover'])) {
-				$v['cover'] = $storageApi->sGetUrl($v['cover'], 'imageView2/1/w/300/h/200');
+				$v['cover'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$v['cover'], array('data_decorate' => 'imageView2/1/w/300/h/200'));
 			}
 		}
 		unset($v);
@@ -149,7 +148,6 @@ class KBlog_Api extends Ko_Busi_Api
 			KContent_Api::BLOG_TITLE => $blogids,
 			KContent_Api::BLOG_CONTENT => array('ids' => $blogids, 'maxlength' => 1000, 'ext' => '...'),
 		));
-		$storageApi = new KStorage_Api();
 		foreach ($infos as &$v) {
 			if ('回收站' === $v['tags']) {
 				$v = array();
@@ -158,7 +156,7 @@ class KBlog_Api extends Ko_Busi_Api
 				$v['title'] = $aText[KContent_Api::BLOG_TITLE][$v['blogid']];
 				$v['content'] = $aText[KContent_Api::BLOG_CONTENT][$v['blogid']];
 				if (strlen($v['cover'])) {
-					$v['cover'] = $storageApi->sGetUrl($v['cover'], 'imageView2/1/w/300/h/200');
+					$v['cover'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$v['cover'], array('data_decorate' => 'imageView2/1/w/300/h/200'));
 				}
 			}
 		}
@@ -324,35 +322,7 @@ class KBlog_Api extends Ko_Busi_Api
 
 	private function _sGetCover($content)
 	{
-		$offset = 0;
-		$storage = new KStorage_Api;
-		while (1) {
-			$url = $this->_sGetImageUrl($content, $offset);
-			if ('' === $url) {
-				break;
-			}
-			list($dest, $brief) = $storage->aParseUrl($url);
-			if ('' !== $dest) {
-				return $dest;
-			}
-		}
-		return '';
-	}
-
-	private function _sGetImageUrl($content, &$offset)
-	{
-		$spos = strpos($content, ' src=', $offset);
-		if (false === $spos) {
-			return '';
-		}
-		$quotes = substr($content, $spos + 5, 1);
-		if ('"' !== $quotes && "'" !== $quotes) {
-			return '';
-		}
-		$offset = strpos($content, $quotes, $spos + 6);
-		if (false === $offset) {
-			return '';
-		}
-		return substr($content, $spos + 6, $offset - $spos - 6);
+		$data = Ko_Apps_Rest::VInvoke('storage', 'POST', 'cover/', array('update' => $content));
+		return $data['key'];
 	}
 }

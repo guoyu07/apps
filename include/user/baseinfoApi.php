@@ -80,34 +80,39 @@ class KUser_baseinfoApi extends Ko_Mode_Item
 	
 	private static function _VFillMoreInfo(&$info, $aMore)
 	{
-		$api = new KStorage_Api;
 		foreach ($aMore as $more)
 		{
 			switch($more)
 			{
 			case 'logo16':
 				$info['logo16'] = ('' === $info['logo'])
-					? 'http://'.IMG_DOMAIN.'/logo/16.png' : $api->sGetUrl($info['logo'], 'imageView2/1/w/16');
+					? 'http://'.IMG_DOMAIN.'/logo/16.png'
+					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/16'));
 				break;
 			case 'logo32':
 				$info['logo32'] = ('' === $info['logo'])
-					? 'http://'.IMG_DOMAIN.'/logo/32.png' : $api->sGetUrl($info['logo'], 'imageView2/1/w/32');
+					? 'http://'.IMG_DOMAIN.'/logo/32.png'
+					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/32'));
 				break;
 			case 'logo48':
 				$info['logo48'] = ('' === $info['logo'])
-					? 'http://'.IMG_DOMAIN.'/logo/48.png' : $api->sGetUrl($info['logo'], 'imageView2/1/w/48');
+					? 'http://'.IMG_DOMAIN.'/logo/48.png'
+					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/48'));
 				break;
 			case 'logo80':
 				$info['logo80'] = ('' === $info['logo'])
-					? 'http://'.IMG_DOMAIN.'/logo/80.png' : $api->sGetUrl($info['logo'], 'imageView2/1/w/80');
+					? 'http://'.IMG_DOMAIN.'/logo/80.png'
+					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/80'));
 				break;
 			case 'logo120':
 				$info['logo120'] = ('' === $info['logo'])
-					? 'http://'.IMG_DOMAIN.'/logo/120.png' : $api->sGetUrl($info['logo'], 'imageView2/1/w/120');
+					? 'http://'.IMG_DOMAIN.'/logo/120.png'
+					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/120'));
 				break;
 			case 'logo200':
 				$info['logo200'] = ('' === $info['logo'])
-					? 'http://'.IMG_DOMAIN.'/logo/200.png' : $api->sGetUrl($info['logo'], 'imageView2/1/w/200');
+					? 'http://'.IMG_DOMAIN.'/logo/200.png'
+					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/200'));
 				break;
 			}
 		}

@@ -31,7 +31,6 @@ class KSysmsg_Api extends Ko_Mode_Sysmsg
 		}
 
 		$userlist = Ko_Tool_Adapter::VConv($userlist, array('list', array('user_baseinfo', array('logo80'))));
-		$storageApi = new KStorage_Api();
 		$photoApi = new KPhoto_Api();
 		$blogApi = new KBlog_Api();
 		$photoinfos = $photoApi->getPhotoInfos($photolist);
@@ -49,7 +48,8 @@ class KSysmsg_Api extends Ko_Mode_Sysmsg
 					foreach ($v['content']['photolist'] as $photo) {
 						if (!empty($photoinfos[$photo['photoid']])
 							&& $photoinfos[$photo['photoid']]['albumid'] == $photo['albumid']) {
-							$photo['image'] = $storageApi->sGetUrl($photoinfos[$photo['photoid']]['image'], 'imageView2/2/w/480/h/240');
+							$photo['image'] = Ko_Apps_Rest::VInvoke('storage', 'GET',
+								'item/'.$photoinfos[$photo['photoid']]['image'], array('data_decorate' => 'imageView2/2/w/480/h/240'));
 							$photolist[] = $photo;
 						}
 					}
