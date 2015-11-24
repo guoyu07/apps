@@ -45,9 +45,12 @@ class KRest_Blog_item
 			throw new Exception('添加博客失败', 2);
 		}
 
-		$contentApi = new KContent_Api();
-		$contentApi->bSet(KContent_Api::DRAFT_CONTENT, $loginuid, '');
-		$contentApi->bSet(KContent_Api::DRAFT_TITLE, $loginuid, '');
+		Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::DRAFT_CONTENT.'_'.$loginuid, array(
+			'update' => '',
+		));
+		Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::DRAFT_TITLE.'_'.$loginuid, array(
+			'update' => '',
+		));
 
 		$this->_sendSysmsg($loginuid, $blogid);
 

@@ -43,8 +43,8 @@ Ko_Web_Route::VGet('user', function () {
 
 	$contentApi = new KContent_Api();
 	$htmlrender = new Ko_View_Render_HTML($contentApi);
-	$htmlrender->oSetData(KContent_Api::BLOG_TITLE, $blogids);
-	$htmlrender->oSetData(KContent_Api::BLOG_CONTENT, array('ids' => $blogids, 'maxlength' => 1000));
+	$htmlrender->oSetData(KContent_Const::BLOG_TITLE, $blogids);
+	$htmlrender->oSetData(KContent_Const::BLOG_CONTENT, array('ids' => $blogids, 'maxlength' => 1000));
 
 	$page = array(
 		'num' => $num,
@@ -82,13 +82,13 @@ Ko_Web_Route::VGet('post', function () {
 			exit;
 		}
 
-		$htmlrender->oSetData(KContent_Api::BLOG_TITLE, $blogid);
-		$htmlrender->oSetData(KContent_Api::BLOG_CONTENT, $blogid);
+		$htmlrender->oSetData(KContent_Const::BLOG_TITLE, $blogid);
+		$htmlrender->oSetData(KContent_Const::BLOG_CONTENT, $blogid);
 	} else {
 		$bloginfo = array();
 
-		$htmlrender->oSetData(KContent_Api::DRAFT_CONTENT, $uid);
-		$htmlrender->oSetData(KContent_Api::DRAFT_TITLE, $uid);
+		$htmlrender->oSetData(KContent_Const::DRAFT_CONTENT, $uid);
+		$htmlrender->oSetData(KContent_Const::DRAFT_TITLE, $uid);
 	}
 
 	$render = new KRender_default;
@@ -123,8 +123,8 @@ Ko_Web_Route::VGet('item', function () {
 
 	$contentApi = new KContent_Api();
 	$htmlrender = new Ko_View_Render_HTML($contentApi);
-	$htmlrender->oSetData(KContent_Api::BLOG_TITLE, $blogid);
-	$htmlrender->oSetData(KContent_Api::BLOG_CONTENT, $blogid);
+	$htmlrender->oSetData(KContent_Const::BLOG_TITLE, $blogid);
+	$htmlrender->oSetData(KContent_Const::BLOG_CONTENT, $blogid);
 
 	$render = new KRender_default;
 	$render->oSetTemplate('default/blog/item.html')

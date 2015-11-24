@@ -15,8 +15,13 @@ class KBlog_Api extends Ko_Busi_Api
 		}
 		$ret = array();
 		if (!empty($blogids)) {
-			$contentApi = new KContent_Api();
-			$aTitle = $contentApi->aGetText(KContent_Api::BLOG_TITLE, $blogids);
+			$aTitle = Ko_Apps_Rest::VInvoke('content', 'GET', 'item/', array(
+				'filter' => array(
+					'aid' => KContent_Const::BLOG_TITLE,
+					'ids' => $blogids,
+				),
+			));
+			$aTitle = $aTitle['list'];
 			if ($info['prev']) {
 				$ret['prev'] = array('blogid' => $info['prev'], 'title' => $aTitle[$info['prev']]);
 			}
@@ -143,18 +148,20 @@ class KBlog_Api extends Ko_Busi_Api
 	{
 		$blogids = Ko_Tool_Utils::AObjs2ids($list, 'blogid');
 		$infos = $this->blogDao->aGetDetails($list);
-		$contentApi = new KContent_Api();
-		$aText = $contentApi->aGetTextEx(array(
-			KContent_Api::BLOG_TITLE => $blogids,
-			KContent_Api::BLOG_CONTENT => array('ids' => $blogids, 'maxlength' => 1000, 'ext' => '...'),
+		$aText = Ko_Apps_Rest::VInvoke('content', 'GET', 'items/', array(
+			'filter' => array(
+				KContent_Const::BLOG_TITLE => $blogids,
+				KContent_Const::BLOG_CONTENT => array('ids' => $blogids, 'maxlength' => 1000, 'ext' => '...'),
+			),
 		));
+		$aText = $aText['list'];
 		foreach ($infos as &$v) {
 			if ('回收站' === $v['tags']) {
 				$v = array();
 			}
 			if (!empty($v)) {
-				$v['title'] = $aText[KContent_Api::BLOG_TITLE][$v['blogid']];
-				$v['content'] = $aText[KContent_Api::BLOG_CONTENT][$v['blogid']];
+				$v['title'] = $aText[KContent_Const::BLOG_TITLE][$v['blogid']];
+				$v['content'] = $aText[KContent_Const::BLOG_CONTENT][$v['blogid']];
 				if (strlen($v['cover'])) {
 					$v['cover'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$v['cover'], array('data_decorate' => 'imageView2/1/w/300/h/200'));
 				}
@@ -189,9 +196,12 @@ class KBlog_Api extends Ko_Busi_Api
 		$data['mtime'] = $data['ctime'];
 		$blogid = $this->blogDao->iInsert($data);
 		if ($blogid) {
-			$contentApi = new KContent_Api;
-			$contentApi->bSet(KContent_Api::BLOG_TITLE, $blogid, $title);
-			$contentApi->bSet(KContent_Api::BLOG_CONTENT, $blogid, $content);
+			Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::BLOG_TITLE.'_'.$blogid, array(
+				'update' => $title,
+			));
+			Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::BLOG_CONTENT.'_'.$blogid, array(
+				'update' => $content,
+			));
 
 			$this->_vAddTags($uid, $blogid, $addtags);
 		}
@@ -216,9 +226,12 @@ class KBlog_Api extends Ko_Busi_Api
 		$subtags = array_diff($oldtagarr, $newtagarr);
 		$this->_vSubTags($uid, $blogid, $subtags);
 
-		$contentApi = new KContent_Api;
-		$contentApi->bSet(KContent_Api::BLOG_TITLE, $blogid, $title);
-		$contentApi->bSet(KContent_Api::BLOG_CONTENT, $blogid, $content);
+		Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::BLOG_TITLE.'_'.$blogid, array(
+			'update' => $title,
+		));
+		Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::BLOG_CONTENT.'_'.$blogid, array(
+			'update' => $content,
+		));
 
 		$update = array(
 			'mtime' => date('Y-m-d H:i:s'),
@@ -239,9 +252,12 @@ class KBlog_Api extends Ko_Busi_Api
 		}
 		if ('回收站' === $info['tags']) {
 			$this->_vSubTags($uid, $blogid, array('回收站'));
-			$contentApi = new KContent_Api;
-			$contentApi->bSet(KContent_Api::BLOG_TITLE, $blogid, '');
-			$contentApi->bSet(KContent_Api::BLOG_CONTENT, $blogid, '');
+			Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::BLOG_TITLE.'_'.$blogid, array(
+				'update' => '',
+			));
+			Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::BLOG_CONTENT.'_'.$blogid, array(
+				'update' => '',
+			));
 			return $this->blogDao->iDelete($blogkey);
 		} else {
 			$subtags = $this->_aGetTags($info['tags']);

@@ -20,15 +20,20 @@ class KRest_Blog_draft
 		$loginuid = $loginApi->iGetLoginUid();
 
 		if ($loginuid) {
-			$contentApi = new KContent_Api;
 			switch ($put_style)
 			{
 				case 'default':
-					$contentApi->bSet(KContent_Api::DRAFT_CONTENT, $loginuid, $update['content']);
-					$contentApi->bSet(KContent_Api::DRAFT_TITLE, $loginuid, $update['title']);
+					Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::DRAFT_CONTENT.'_'.$loginuid, array(
+						'update' => $update['content'],
+					));
+					Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::DRAFT_TITLE.'_'.$loginuid, array(
+						'update' => $update['title'],
+					));
 					break;
 				case 'title':
-					$contentApi->bSet(KContent_Api::DRAFT_TITLE, $loginuid, $update['title']);
+					Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::DRAFT_TITLE.'_'.$loginuid, array(
+						'update' => $update['title'],
+					));
 					break;
 			}
 		}

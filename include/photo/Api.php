@@ -11,14 +11,16 @@ class KPhoto_Api extends Ko_Busi_Api
 	{
 		$albumids = Ko_Tool_Utils::AObjs2ids($list, 'albumid');
 		$infos = $this->albumDao->aGetDetails($list);
-		$contentApi = new KContent_Api();
-		$aText = $contentApi->aGetTextEx(array(
-			KContent_Api::PHOTO_ALBUM_TITLE => $albumids,
-			KContent_Api::PHOTO_ALBUM_DESC => $albumids,
+		$aText = Ko_Apps_Rest::VInvoke('content', 'GET', 'items/', array(
+			'filter' => array(
+				KContent_Const::PHOTO_ALBUM_TITLE => $albumids,
+				KContent_Const::PHOTO_ALBUM_DESC => $albumids,
+			),
 		));
+		$aText = $aText['list'];
 		foreach ($infos as &$v) {
-			$v['title'] = $aText[KContent_Api::PHOTO_ALBUM_TITLE][$v['albumid']];
-			$v['desc'] = $aText[KContent_Api::PHOTO_ALBUM_DESC][$v['albumid']];
+			$v['title'] = $aText[KContent_Const::PHOTO_ALBUM_TITLE][$v['albumid']];
+			$v['desc'] = $aText[KContent_Const::PHOTO_ALBUM_DESC][$v['albumid']];
 		}
 		unset($v);
 		return $infos;
@@ -29,8 +31,7 @@ class KPhoto_Api extends Ko_Busi_Api
 		$photokey = compact('uid', 'photoid');
 		$info = $this->photoDao->aGet($photokey);
 		if (!empty($info)) {
-			$contentApi = new KContent_Api();
-			$info['title'] = $contentApi->sGetText(KContent_Api::PHOTO_TITLE, $photoid);
+			$info['title'] = Ko_Apps_Rest::VInvoke('content', 'GET', 'item/'.KContent_Const::PHOTO_TITLE.'_'.$photoid);
 		}
 		return $info;
 	}
@@ -72,13 +73,15 @@ class KPhoto_Api extends Ko_Busi_Api
 		$albumkey = compact('uid', 'albumid');
 		$info = $this->albumDao->aGet($albumkey);
 		if (!empty($info)) {
-			$contentApi = new KContent_Api();
-			$aText = $contentApi->aGetTextEx(array(
-				KContent_Api::PHOTO_ALBUM_TITLE => array($albumid),
-				KContent_Api::PHOTO_ALBUM_DESC => array($albumid),
+			$aText = Ko_Apps_Rest::VInvoke('content', 'GET', 'items/', array(
+				'filter' => array(
+					KContent_Const::PHOTO_ALBUM_TITLE => array($albumid),
+					KContent_Const::PHOTO_ALBUM_DESC => array($albumid),
+				),
 			));
-			$info['title'] = $aText[KContent_Api::PHOTO_ALBUM_TITLE][$albumid];
-			$info['desc'] = $aText[KContent_Api::PHOTO_ALBUM_DESC][$albumid];
+			$aText = $aText['list'];
+			$info['title'] = $aText[KContent_Const::PHOTO_ALBUM_TITLE][$albumid];
+			$info['desc'] = $aText[KContent_Const::PHOTO_ALBUM_DESC][$albumid];
 			$info['isrecycle'] = $info['albumid'] == $this->_getRecycleAlbumid($uid);
 		}
 		return $info;
@@ -111,8 +114,13 @@ class KPhoto_Api extends Ko_Busi_Api
 			}
 		}
 		$photoids = Ko_Tool_Utils::AObjs2ids($photolist, 'photoid');
-		$contentApi = new KContent_Api();
-		$aText = $contentApi->aGetText(KContent_Api::PHOTO_TITLE, $photoids);
+		$aText = Ko_Apps_Rest::VInvoke('content', 'GET', 'item/', array(
+			'filter' => array(
+				'aid' => KContent_Const::PHOTO_TITLE,
+				'ids' => $photoids,
+			),
+		));
+		$aText = $aText['list'];
 		$images = Ko_Tool_Utils::AObjs2ids($photolist, 'image');
 		$sizes = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/',
 			array('filter' => $images, 'data_style' => 'size_brief', 'data_decorate' => $decorate));
@@ -232,15 +240,17 @@ class KPhoto_Api extends Ko_Busi_Api
 		$option->oWhere('uid = ?', $uid)->oOrderBy('sort desc');
 		$albumlist = $this->albumDao->aGetList($option);
 		$albumids = Ko_Tool_Utils::AObjs2ids($albumlist, 'albumid');
-		$contentApi = new KContent_Api();
-		$aText = $contentApi->aGetTextEx(array(
-			KContent_Api::PHOTO_ALBUM_TITLE => $albumids,
-			KContent_Api::PHOTO_ALBUM_DESC => $albumids,
+		$aText = Ko_Apps_Rest::VInvoke('content', 'GET', 'items/', array(
+			'filter' => array(
+				KContent_Const::PHOTO_ALBUM_TITLE => $albumids,
+				KContent_Const::PHOTO_ALBUM_DESC => $albumids,
+			),
 		));
+		$aText = $aText['list'];
 		$recycleid = $this->_getRecycleAlbumid($uid);
 		foreach ($albumlist as &$v) {
-			$v['title'] = $aText[KContent_Api::PHOTO_ALBUM_TITLE][$v['albumid']];
-			$v['desc'] = $aText[KContent_Api::PHOTO_ALBUM_DESC][$v['albumid']];
+			$v['title'] = $aText[KContent_Const::PHOTO_ALBUM_TITLE][$v['albumid']];
+			$v['desc'] = $aText[KContent_Const::PHOTO_ALBUM_DESC][$v['albumid']];
 			$v['isrecycle'] = $v['albumid'] == $recycleid;
 		}
 		unset($v);
@@ -271,15 +281,17 @@ class KPhoto_Api extends Ko_Busi_Api
 		}
 		unset($v);
 		$photoinfos = $this->photoDao->aGetDetails($allphotoids);
-		$contentApi = new KContent_Api();
-		$aText = $contentApi->aGetTextEx(array(
-			KContent_Api::PHOTO_ALBUM_TITLE => $albumids,
-			KContent_Api::PHOTO_ALBUM_DESC => $albumids,
+		$aText = Ko_Apps_Rest::VInvoke('content', 'GET', 'items/', array(
+			'filter' => array(
+				KContent_Const::PHOTO_ALBUM_TITLE => $albumids,
+				KContent_Const::PHOTO_ALBUM_DESC => $albumids,
+			),
 		));
+		$aText = $aText['list'];
 		$recycleid = $this->_getRecycleAlbumid($uid);
 		foreach ($albumlist as &$v) {
-			$v['title'] = $aText[KContent_Api::PHOTO_ALBUM_TITLE][$v['albumid']];
-			$v['desc'] = $aText[KContent_Api::PHOTO_ALBUM_DESC][$v['albumid']];
+			$v['title'] = $aText[KContent_Const::PHOTO_ALBUM_TITLE][$v['albumid']];
+			$v['desc'] = $aText[KContent_Const::PHOTO_ALBUM_DESC][$v['albumid']];
 			$v['isrecycle'] = $v['albumid'] == $recycleid;
 			$v['digest'] = $digest[$v['albumid']];
 			foreach ($v['digest'] as &$vv) {
@@ -302,8 +314,10 @@ class KPhoto_Api extends Ko_Busi_Api
 		if (empty($photo)) {
 			return false;
 		}
-		$contentApi = new KContent_Api();
-		return $contentApi->bSet(KContent_Api::PHOTO_TITLE, $photoid, $title);
+		Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::PHOTO_TITLE.'_'.$photoid, array(
+			'update' => $title,
+		));
+		return true;
 	}
 
 	public function changePhotoAlbumid($uid, $photoid, $albumid)
@@ -350,8 +364,10 @@ class KPhoto_Api extends Ko_Busi_Api
 		if (empty($album)) {
 			return false;
 		}
-		$contentApi = new KContent_Api();
-		return $contentApi->bSet(KContent_Api::PHOTO_ALBUM_TITLE, $albumid, $title);
+		Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::PHOTO_ALBUM_TITLE.'_'.$albumid, array(
+			'update' => $title,
+		));
+		return true;
 	}
 
 	public function changeAlbumDesc($uid, $albumid, $desc)
@@ -368,8 +384,10 @@ class KPhoto_Api extends Ko_Busi_Api
 		if (empty($album)) {
 			return false;
 		}
-		$contentApi = new KContent_Api();
-		return $contentApi->bSet(KContent_Api::PHOTO_ALBUM_DESC, $albumid, $desc);
+		Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::PHOTO_ALBUM_DESC.'_'.$albumid, array(
+			'update' => $desc,
+		));
+		return true;
 	}
 
 	public function deletePhoto($uid, $photoid)
@@ -457,8 +475,9 @@ class KPhoto_Api extends Ko_Busi_Api
 		$photoid = $this->photoDao->iInsert($data);
 		if ($photoid) {
 			if (strlen($title)) {
-				$contentApi = new KContent_Api();
-				$contentApi->bSet(KContent_Api::PHOTO_TITLE, $photoid, $title);
+				Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::PHOTO_TITLE.'_'.$photoid, array(
+					'update' => $title,
+				));
 			}
 
 			$albumkey = compact('uid', 'albumid');
@@ -519,9 +538,12 @@ class KPhoto_Api extends Ko_Busi_Api
 		);
 		$albumid = $this->albumDao->iInsert($data);
 		if ($albumid) {
-			$contentApi = new KContent_Api();
-			$contentApi->bSet(KContent_Api::PHOTO_ALBUM_TITLE, $albumid, $title);
-			$contentApi->bSet(KContent_Api::PHOTO_ALBUM_DESC, $albumid, $desc);
+			Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::PHOTO_ALBUM_TITLE.'_'.$albumid, array(
+				'update' => $title,
+			));
+			Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::PHOTO_ALBUM_DESC.'_'.$albumid, array(
+				'update' => $desc,
+			));
 		}
 		return $albumid;
 	}

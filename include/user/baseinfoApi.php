@@ -18,8 +18,13 @@ class KUser_baseinfoApi extends Ko_Mode_Item
 			$uids[] = $v[0];
 		}
 		$infos = Ko_Tool_Singleton::OInstance('KUser_baseinfoApi')->aGetListByKeys($uids);
-		$contentApi = new KContent_Api;
-		$nicknames = $contentApi->aGetText(KContent_Api::USER_NICKNAME, $uids);
+		$nicknames = Ko_Apps_Rest::VInvoke('content', 'GET', 'item/', array(
+			'filter' => array(
+				'aid' => KContent_Const::USER_NICKNAME,
+				'ids' => $uids,
+			),
+		));
+		$nicknames = $nicknames['list'];
 		foreach ($datalist as $k => $v)
 		{
 			$newdatalist[$k] = isset($infos[$v[0]]) ? $infos[$v[0]] : array();
@@ -39,8 +44,9 @@ class KUser_baseinfoApi extends Ko_Mode_Item
 				'uid' => $uid,
 			);
 			$this->aInsert($data, $data);
-			$contentApi = new KContent_Api;
-			$contentApi->bSet(KContent_Api::USER_NICKNAME, $uid, $nickname);
+			Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::USER_NICKNAME.'_'.$uid, array(
+				'update' => $nickname,
+			));
 		}
 		return true;
 	}
@@ -77,8 +83,9 @@ class KUser_baseinfoApi extends Ko_Mode_Item
 				}
 			}
 			$this->aInsert($data, $data);
-			$contentApi = new KContent_Api;
-			$contentApi->bSet(KContent_Api::USER_NICKNAME, $uid, $userinfo['nickname']);
+			Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.KContent_Const::USER_NICKNAME.'_'.$uid, array(
+				'update' => $userinfo['nickname'],
+			));
 		}
 		return true;
 	}
