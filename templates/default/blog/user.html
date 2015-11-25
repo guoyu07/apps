@@ -126,7 +126,7 @@
 			var uid = $('#userdata').data('uid');
 			var blogid = $(this).closest('.blogdiv').data('blogid');
 			if (confirm('你确认要删除这篇博客？')) {
-				$.post('/rest/blog/item/' + uid + '_' + blogid, {'method': 'DELETE'}, function(data, status){
+				$.post('/blog/rest/item/' + uid + '_' + blogid, {'method': 'DELETE'}, function(data, status){
 					if (data.errno) {
 						alert(data.error);
 					} else {
@@ -138,7 +138,7 @@
 		$('body').delegate('.resetblog', 'click', function(){
 			var uid = $('#userdata').data('uid');
 			var blogid = $(this).closest('.blogdiv').data('blogid');
-			$.post('/rest/blog/item/' + uid + '_' + blogid, {'method': 'PUT', 'put_style': 'reset'}, function(data, status){
+			$.post('/blog/rest/item/' + uid + '_' + blogid, {'method': 'PUT', 'put_style': 'reset'}, function(data, status){
 				if (data.errno) {
 					alert(data.error);
 				} else {

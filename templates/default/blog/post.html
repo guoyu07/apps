@@ -42,7 +42,7 @@
 		$('body').delegate('#blogtitle', 'change', function() {
 			if (!blogid) {
 				var title = $('#blogtitle').val();
-				$.post('/rest/blog/draft/', {'method': 'PUT', 'put_style': 'title', 'update':{'title': title}}, function(data, status){
+				$.post('/blog/rest/draft/', {'method': 'PUT', 'put_style': 'title', 'update':{'title': title}}, function(data, status){
 					if (data.errno) {
 						alert(data.error);
 					}
@@ -60,7 +60,7 @@
 				alert('请填写标题');
 				return false;
 			}
-			var url = '/rest/blog/item/';
+			var url = '/blog/rest/item/';
 			var params = {'update': {'title':title, 'content':content, 'tags': tags}};
 			if (blogid) {
  				var uid = $('#postdata').data('uid');
@@ -123,7 +123,7 @@
 		function saveContent(content) {
 			if (!blogid) {
 				var title = $('#blogtitle').val();
-				$.post('/rest/blog/draft/', {'method': 'PUT', 'update':{'content': content, 'title': title}}, function(data, status){
+				$.post('/blog/rest/draft/', {'method': 'PUT', 'update':{'content': content, 'title': title}}, function(data, status){
 					if (data.errno) {
 						alert(data.error);
 						editor.isNotDirty = false;

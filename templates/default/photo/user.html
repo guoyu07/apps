@@ -110,7 +110,7 @@
         $('body').delegate('#btnOkAddAlbum', 'click', function(){
             var title = $('#addalbumtitle').val();
             var desc = $('#addalbumdesc').val();
-            $.post('/rest/photo/album/', {'update':{'title':title, 'desc':desc}}, function(data, status){
+            $.post('/photo/rest/album/', {'update':{'title':title, 'desc':desc}}, function(data, status){
                 if (data.errno) {
                     alert(data.error);
                 } else {
@@ -128,7 +128,7 @@
             if (oldVal != newVal && '' != newVal) {
                 var uid = $('#userdata').data('uid');
                 var albumid = root.data('albumid');
-                $.post('/rest/photo/album/' + uid + '_' + albumid,
+                $.post('/photo/rest/album/' + uid + '_' + albumid,
                         {'method':'PUT', 'put_style':'title', 'update': newVal},
                         function(data, status){
                             if (data.errno) {
@@ -175,7 +175,7 @@
             if (oldVal != newVal) {
                 var uid = $('#userdata').data('uid');
                 var albumid = root.data('albumid');
-                $.post('/rest/photo/album/' + uid + '_' + albumid,
+                $.post('/photo/rest/album/' + uid + '_' + albumid,
                     {'method':'PUT', 'put_style':'desc', 'update': newVal},
                     function(data, status){
                         if (data.errno) {
@@ -219,7 +219,7 @@
             var uid = $('#userdata').data('uid');
             var albumid = root.data('albumid');
             if (confirm('确认要删除该相册吗？')) {
-                $.post('/rest/photo/album/' + uid + '_' + albumid, {'method':'DELETE'}, function(data, status){
+                $.post('/photo/rest/album/' + uid + '_' + albumid, {'method':'DELETE'}, function(data, status){
                     if (data.errno) {
                         alert(data.error);
                     } else {
@@ -238,7 +238,7 @@
             var lastloaded = 0;
             var uploaderConfig = {
                 browse_button: 'btnAddPhoto',
-                url: '/rest/photo/item/',
+                url: '/photo/rest/item/',
                 multi_selection: true,
                 multipart_params: {
                     'after_style': 'default',

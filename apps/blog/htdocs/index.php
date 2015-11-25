@@ -9,7 +9,7 @@ namespace APPS\blog;
 	$tag = \Ko_Web_Request::SGet('tag');
 	$page = max(1, \Ko_Web_Request::IGet('page'));
 	if (0 == strlen($tag)) {
-		$tag = 'È«²¿';
+		$tag = 'å…¨éƒ¨';
 	}
 
 	$userinfo = \Ko_Tool_Adapter::VConv($uid, array('user_baseinfo', array('logo80')));
@@ -18,7 +18,7 @@ namespace APPS\blog;
 	$taginfos = $blogApi->aGetAllTaginfo($uid);
 	$bloglist = $blogApi->aGetBlogList($uid, $tag, ($page - 1) * $num, $num, $total);
 	if (empty($bloglist)) {
-		if ('È«²¿' !== $tag) {
+		if ('å…¨éƒ¨' !== $tag) {
 			if (1 == $page) {
 				\Ko_Web_Response::VSetRedirect('?uid='.$uid);
 			} else {
@@ -32,7 +32,7 @@ namespace APPS\blog;
 			exit;
 		}
 	}
-	if ('»ØÊÕÕ¾' === $tag) {
+	if ('å›žæ”¶ç«™' === $tag) {
 		$loginApi = new \KUser_loginApi();
 		$loginuid = $loginApi->iGetLoginUid();
 		if ($loginuid != $uid) {
@@ -78,7 +78,7 @@ namespace APPS\blog;
 	$htmlrender = new \Ko_View_Render_HTML($contentApi);
 	if ($blogid) {
 		$bloginfo = $blogApi->aGet($uid, $blogid);
-		if (empty($bloginfo) || in_array('»ØÊÕÕ¾', $bloginfo['tags'])) {
+		if (empty($bloginfo) || in_array('å›žæ”¶ç«™', $bloginfo['tags'])) {
 			\Ko_Web_Response::VSetRedirect('user?uid='.$uid);
 			\Ko_Web_Response::VSend();
 			exit;
@@ -112,7 +112,7 @@ namespace APPS\blog;
 	$blogApi = new MApi();
 	$taginfos = $blogApi->aGetAllTaginfo($uid);
 	$bloginfo = $blogApi->aGet($uid, $blogid);
-	if (empty($bloginfo) || in_array('»ØÊÕÕ¾', $bloginfo['tags'])) {
+	if (empty($bloginfo) || in_array('å›žæ”¶ç«™', $bloginfo['tags'])) {
 		\Ko_Web_Response::VSetRedirect('user?uid='.$uid);
 		\Ko_Web_Response::VSend();
 		exit;

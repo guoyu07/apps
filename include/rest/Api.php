@@ -44,7 +44,7 @@ class KRest_Api extends Ko_Mode_Rest
 			$input = json_decode($input['jsondata'], true);
 		}
 
-		$rest = new KRest_Api;
+		$rest = new self;
 		$data = $rest->aCall($req_method, $uri, $input);
 
 		$render = new KRender_json();

@@ -147,7 +147,7 @@
 		            var photoid = $(this).closest('.photodiv').data('photoid');
 		            photoids.push({'key': {'uid': uid, 'photoid': photoid}, 'update': albumid});
 	            });
-	            $.post('/rest/photo/item/',
+	            $.post('/photo/rest/item/',
 		            {'method':'PUT', 'put_style':'albumid', 'list': photoids},
 		            function(data, status){
 			            if (data.errno) {
@@ -170,7 +170,7 @@
 					var photoid = $(this).closest('.photodiv').data('photoid');
 					photoids.push({'key': {'uid': uid, 'photoid': photoid}});
 				});
-				$.post('/rest/photo/item/',
+				$.post('/photo/rest/item/',
 					{'method':'DELETE', 'list': photoids},
 					function(data, status){
 						if (data.errno) {
@@ -232,7 +232,7 @@
                 var boundary = $('#getmorediv').data('boundary');
 	            var num = $('#getmorediv').data('num');
                 getmoring = true;
-                $.get('/rest/photo/item/',
+                $.get('/photo/rest/item/',
                     {'page':{'mode': 'sequential', 'boundary': boundary, 'num': num}, 'filter': {'uid': uid, 'albumid': albumid}},
                     function(data, status){
                         if (data.errno) {
@@ -290,7 +290,7 @@
             if (oldVal != newVal && '' != newVal) {
                 var uid = $('#albumdata').data('uid');
                 var albumid = $('#albumdata').data('albumid');
-                $.post('/rest/photo/album/' + uid + '_' + albumid,
+                $.post('/photo/rest/album/' + uid + '_' + albumid,
                         {'method':'PUT', 'put_style':'title', 'update': newVal},
                         function(data, status){
                             if (data.errno) {
@@ -335,7 +335,7 @@
             if (oldVal != newVal && '' != newVal) {
                 var uid = $('#albumdata').data('uid');
                 var photoid = root.data('photoid');
-                $.post('/rest/photo/item/' + uid + '_' + photoid,
+                $.post('/photo/rest/item/' + uid + '_' + photoid,
                         {'method':'PUT', 'put_style':'title', 'update': newVal},
                         function(data, status){
                             if (data.errno) {
@@ -392,7 +392,7 @@
 	        var lastloaded = 0;
             var uploaderConfig = {
                 browse_button: 'btnAddPhoto',
-                url: '/rest/photo/item/',
+                url: '/photo/rest/item/',
                 multi_selection: true,
                 multipart_params: {
                     'post_style': 'album',

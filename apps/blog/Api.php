@@ -40,19 +40,19 @@ class MApi extends \Ko_Busi_Api
 		if (1 == $tagcount) {
 			return $tag = $tags[0];
 		} else if (1 < $tagcount) {
-			$tags = array_values(array_diff($tags, array('Î´·ÖÀà')));
+			$tags = array_values(array_diff($tags, array('æœªåˆ†ç±»')));
 			$tagcount = count($tags);
 			if (1 == $tagcount) {
 				return $tag = $tags[0];
 			} else if (1 < $tagcount) {
-				$tags = array_values(array_diff($tags, array('È«²¿')));
+				$tags = array_values(array_diff($tags, array('å…¨éƒ¨')));
 				$tagcount = count($tags);
 				if (1 == $tagcount) {
 					return $tag = $tags[0];
 				}
 			}
 		}
-		return 'È«²¿';
+		return 'å…¨éƒ¨';
 	}
 
 	public function aGetBlogList($uid, $tag, $start, $num, &$total)
@@ -158,7 +158,7 @@ class MApi extends \Ko_Busi_Api
 		));
 		$aText = $aText['list'];
 		foreach ($infos as &$v) {
-			if ('»ØÊÕÕ¾' === $v['tags']) {
+			if ('å›æ”¶ç«™' === $v['tags']) {
 				$v = array();
 			}
 			if (!empty($v)) {
@@ -217,7 +217,7 @@ class MApi extends \Ko_Busi_Api
 		if (empty($info)) {
 			return 0;
 		}
-		if ('»ØÊÕÕ¾' === $info['tags']) {
+		if ('å›æ”¶ç«™' === $info['tags']) {
 			return 0;
 		}
 
@@ -252,8 +252,8 @@ class MApi extends \Ko_Busi_Api
 		if (empty($info)) {
 			return 0;
 		}
-		if ('»ØÊÕÕ¾' === $info['tags']) {
-			$this->_vSubTags($uid, $blogid, array('»ØÊÕÕ¾'));
+		if ('å›æ”¶ç«™' === $info['tags']) {
+			$this->_vSubTags($uid, $blogid, array('å›æ”¶ç«™'));
 			\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_TITLE.'_'.$blogid, array(
 				'update' => '',
 			));
@@ -264,10 +264,10 @@ class MApi extends \Ko_Busi_Api
 		} else {
 			$subtags = $this->_aGetTags($info['tags']);
 			$this->_vSubTags($uid, $blogid, $subtags);
-			$this->_vAddTags($uid, $blogid, array('»ØÊÕÕ¾'));
+			$this->_vAddTags($uid, $blogid, array('å›æ”¶ç«™'));
 			$update = array(
 				'mtime' => date('Y-m-d H:i:s'),
-				'tags' => '»ØÊÕÕ¾',
+				'tags' => 'å›æ”¶ç«™',
 			);
 			return $this->blogDao->iUpdate($blogkey, $update);
 		}
@@ -280,14 +280,14 @@ class MApi extends \Ko_Busi_Api
 		if (empty($info)) {
 			return 0;
 		}
-		if ('»ØÊÕÕ¾' !== $info['tags']) {
+		if ('å›æ”¶ç«™' !== $info['tags']) {
 			return 0;
 		}
-		$this->_vSubTags($uid, $blogid, array('»ØÊÕÕ¾'));
-		$this->_vAddTags($uid, $blogid, array('È«²¿', 'Î´·ÖÀà'));
+		$this->_vSubTags($uid, $blogid, array('å›æ”¶ç«™'));
+		$this->_vAddTags($uid, $blogid, array('å…¨éƒ¨', 'æœªåˆ†ç±»'));
 		$update = array(
 			'mtime' => date('Y-m-d H:i:s'),
-			'tags' => 'È«²¿ Î´·ÖÀà',
+			'tags' => 'å…¨éƒ¨ æœªåˆ†ç±»',
 		);
 		return $this->blogDao->iUpdate($blogkey, $update);
 	}
@@ -322,14 +322,14 @@ class MApi extends \Ko_Busi_Api
 
 	private function _aGetTags($tags)
 	{
-		if ('»ØÊÕÕ¾' === $tags) {
-			return array('»ØÊÕÕ¾');
+		if ('å›æ”¶ç«™' === $tags) {
+			return array('å›æ”¶ç«™');
 		}
 		$tags = explode(' ', $tags);
-		$tags[] = 'È«²¿';
-		$tags = array_values(array_diff(array_unique($tags), array('', 'Î´·ÖÀà', '»ØÊÕÕ¾')));
+		$tags[] = 'å…¨éƒ¨';
+		$tags = array_values(array_diff(array_unique($tags), array('', 'æœªåˆ†ç±»', 'å›æ”¶ç«™')));
 		if (1 === count($tags)) {
-			$tags[] = 'Î´·ÖÀà';
+			$tags[] = 'æœªåˆ†ç±»';
 		}
 		foreach ($tags as &$tag) {
 			$tag = \Ko_Tool_Str::SSubStr_UTF8($tag, 60);

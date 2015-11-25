@@ -65,7 +65,7 @@
 			var uid = $('#blogdata').data('uid');
 			var blogid = $('#blogdata').data('blogid');
 			if (confirm('你确认要删除这篇博客？')) {
-				$.post('/rest/blog/item/' + uid + '_' + blogid, {'method': 'DELETE'}, function(data, status){
+				$.post('/blog/rest/item/' + uid + '_' + blogid, {'method': 'DELETE'}, function(data, status){
 					if (data.errno) {
 						alert(data.error);
 					} else {

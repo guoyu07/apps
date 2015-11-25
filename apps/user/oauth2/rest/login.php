@@ -20,7 +20,7 @@ class MRest_login
 		$api = new MApi;
 		$tokeninfo = $api->aGetTokenInfo($id);
 		if (!$api->bGetUserinfoByTokeninfo($id, $tokeninfo, $username, $userinfo)) {
-			throw new \Exception('µÇÂ¼Ê§°Ü', 1);
+			throw new \Exception('ç™»å½•å¤±è´¥', 1);
 		}
 		return compact('tokeninfo', 'username', 'userinfo');
 	}

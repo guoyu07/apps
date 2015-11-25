@@ -1,6 +1,8 @@
 <?php
 
-class KRest_Photo_item
+namespace APPS\photo;
+
+class MRest_item
 {
 	public static $s_aConf = array(
 		'unique' => array('hash', array(
@@ -46,13 +48,13 @@ class KRest_Photo_item
 	public function getMulti($style, $page, $filter, $exstyle = null, $filter_style = 'default')
 	{
 		$num = $page['num'];
-		$loginApi = new KUser_loginApi();
+		$loginApi = new \KUser_loginApi();
 		$loginuid = $loginApi->iGetLoginUid();
 
-		$photoApi = new KPhoto_Api();
+		$photoApi = new MApi();
 		$albuminfo = $photoApi->getAlbumInfo($filter['uid'], $filter['albumid']);
 		if (empty($albuminfo) || ($albuminfo['isrecycle'] && $filter['uid'] != $loginuid)) {
-			throw new Exception('获取数据失败', 1);
+			throw new \Exception('获取数据失败', 1);
 		}
 
 		$photolist = $photoApi->getPhotoListBySeq($filter['uid'], $filter['albumid'],
@@ -69,8 +71,8 @@ class KRest_Photo_item
 
 	public function post($update, $after = null, $post_style = 'default')
 	{
-		$file = Ko_Web_Request::AFile('file');
-		$data = Ko_Apps_Rest::VInvoke('storage', 'POST', 'item/', array(
+		$file = \Ko_Web_Request::AFile('file');
+		$data = \Ko_Apps_Rest::VInvoke('storage', 'POST', 'item/', array(
 			'post_style' => 'upload',
 			'update' => array(
 				'file' => $file,
@@ -78,15 +80,15 @@ class KRest_Photo_item
 		), $error);
 		if ($error)
 		{
-			throw new Exception('文件上传失败', 1);
+			throw new \Exception('文件上传失败', 1);
 		}
 		$image = $data['key'];
 		$title = $file['name'];
 
-		$loginApi = new KUser_loginApi();
+		$loginApi = new \KUser_loginApi();
 		$uid = $loginApi->iGetLoginUid();
 
-		$photoApi = new KPhoto_Api;
+		$photoApi = new MApi;
 		switch ($post_style)
 		{
 			case 'album':
@@ -103,7 +105,7 @@ class KRest_Photo_item
 			switch ($after['style']) {
 				default:
 					$data['after'] = $photoApi->getPhotoInfo($uid, $photoid);
-					$data['after']['image'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$image, array('data_decorate' => $after['decorate']));
+					$data['after']['image'] = \Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$image, array('data_decorate' => $after['decorate']));
 					break;
 			}
 		}
@@ -112,13 +114,13 @@ class KRest_Photo_item
 
 	public function put($id, $update, $before = null, $after = null, $put_style = 'default')
 	{
-		$loginApi = new KUser_loginApi();
+		$loginApi = new \KUser_loginApi();
 		$uid = $loginApi->iGetLoginUid();
 		if ($uid != $id['uid']) {
-			throw new Exception('修改照片失败', 1);
+			throw new \Exception('修改照片失败', 1);
 		}
 
-		$photoApi = new KPhoto_Api();
+		$photoApi = new MApi();
 		switch ($put_style)
 		{
 			case 'title':
@@ -134,15 +136,15 @@ class KRest_Photo_item
 
 	public function delete($id, $before = null)
 	{
-		$loginApi = new KUser_loginApi();
+		$loginApi = new \KUser_loginApi();
 		$uid = $loginApi->iGetLoginUid();
 		if ($uid != $id['uid']) {
-			throw new Exception('删除照片失败', 1);
+			throw new \Exception('删除照片失败', 1);
 		}
 
-		$photoApi = new KPhoto_Api;
+		$photoApi = new MApi;
 		if (!$photoApi->deletePhoto($uid, $id['photoid'])) {
-			throw new Exception('删除照片失败', 2);
+			throw new \Exception('删除照片失败', 2);
 		}
 		return array('key' => $id);
 	}
@@ -150,11 +152,11 @@ class KRest_Photo_item
 	private function _sendSysmsg($uid, $albumid, $photoid)
 	{
 		if (18 <= $uid && $uid <= 21) {
-			$photoApi = new KPhoto_Api;
+			$photoApi = new MApi;
 			$content = compact('uid', 'albumid', 'photoid');
 			$content['photolist'] = $photoApi->getPhotoList($uid, $albumid, 0, 9, $total);
-			$sysmsgApi = new KSysmsg_Api();
-			$sysmsgApi->iSend(0, KSysmsg_Api::PHOTO, $content, $albumid);
+			$sysmsgApi = new \KSysmsg_Api();
+			$sysmsgApi->iSend(0, \KSysmsg_Api::PHOTO, $content, $albumid);
 		}
 	}
 }

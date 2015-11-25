@@ -46,6 +46,10 @@ Ko_Web_Event::On('ko.config', 'after', function () {
 		Ko_Web_Response::VSend();
 		exit;
 	}
+	//$templateroot = Ko_Web_Config::SGetValue('templateroot');
+	//if (strlen($templateroot) && is_dir($templateroot)) {
+	//	define('KO_TEMPLATE_DIR', $templateroot);
+	//}
 	if ('passport' === $appname) {
 		KUser_loginrefApi::VInit();
 	} else if ('www' === $appname) {
