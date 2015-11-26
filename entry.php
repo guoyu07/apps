@@ -50,16 +50,16 @@ Ko_Web_Event::On('ko.config', 'after', function () {
 	//if (strlen($templateroot) && is_dir($templateroot)) {
 	//	define('KO_TEMPLATE_DIR', $templateroot);
 	//}
-	if ('passport' === $appname) {
-		Ko_Apps_Rest::VInvoke('user', 'PUT', 'loginref/');
-	} else if ('www' === $appname) {
-		$loginuid = Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
-		if (empty($loginuid)) {
-			Ko_Web_Response::VSetRedirect('http://'.PASSPORT_DOMAIN.'/user/login');
-			Ko_Web_Response::VSend();
-			exit;
-		}
-	}
+	//if ('passport' === $appname) {
+	//	Ko_Apps_Rest::VInvoke('user', 'PUT', 'loginref/');
+	//} else if ('home' === $appname) {
+	//	$loginuid = Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+	//	if (empty($loginuid)) {
+	//		Ko_Web_Response::VSetRedirect('http://'.PASSPORT_DOMAIN.'/user/login');
+	//		Ko_Web_Response::VSend();
+	//		exit;
+	//	}
+	//}
 });
 
 Ko_Web_Event::On('ko.error', '500', function ($errno, $errstr, $errfile, $errline, $errcontext) {
@@ -170,8 +170,8 @@ function user_VFillMoreInfo(&$info, $aMore)
 Ko_Web_Event::On('ko.dispatch', 'before', function () {
 	Ko_Tool_Adapter::VOn('user_baseinfo', 'user_AAdapter');
 	Ko_Tool_Adapter::VOn('image_baseinfo', 'image_AAdapter');
-	$appname = Ko_Web_Config::SGetAppName();
-	if ('zc' === $appname) {
+	$host = Ko_Web_Request::SHttpHost();
+	if ('zc.'.MAIN_DOMAIN === $host) {
 		$_GET['uid'] = 20;
 	}
 });

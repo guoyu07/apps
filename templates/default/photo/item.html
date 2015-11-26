@@ -166,7 +166,7 @@
             if (oldVal != newVal && '' != newVal) {
                 var uid = $('#photodata').data('uid');
                 var photoid = $('#photodata').data('photoid');
-                $.post('/photo/rest/item/' + uid + '_' + photoid,
+                $.post('rest/item/' + uid + '_' + photoid,
                         {'method':'PUT', 'put_style':'title', 'update': newVal},
                         function(data, status){
                     if (data.errno) {
@@ -210,7 +210,7 @@
             var albumid = $('#photodata').data('albumid');
             var photoid = $('#photodata').data('photoid');
             if (confirm('确认要删除该照片吗？')) {
-                $.post('/photo/rest/item/' + uid + '_' + photoid, {'method':'DELETE'}, function(data, status){
+                $.post('rest/item/' + uid + '_' + photoid, {'method':'DELETE'}, function(data, status){
                     if (data.errno) {
                         alert(data.error);
                     } else {
