@@ -9,6 +9,23 @@ class MRest_item
 			'uid' => 'int',
 			'blogid' => 'int',
 		)),
+		'stylelist' => array(
+			'default' => array('hash', array(
+				'blogid' => 'int',
+				'uid' => 'int',
+				'ctime' => 'string',
+				'mtime' => 'string',
+				'cover' => 'string',
+				'title' => 'string',
+				'content' => 'string',
+			)),
+		),
+		'filterstylelist' => array(
+			'default' => array('list', array('hash', array(
+				'uid' => 'int',
+				'blogid' => 'int',
+			))),
+		),
 		'poststylelist' => array(
 			'default' => array('hash', array(
 				'title' => 'string',
@@ -30,6 +47,13 @@ class MRest_item
 	{
 		list($uid, $blogid) = explode('_', $str);
 		return compact('uid', 'blogid');
+	}
+
+	public function getMulti($style, $page, $filter, $ex_style = null, $filter_style = 'default')
+	{
+		$api = new MApi();
+		$list = $api->aGetBlogInfos($filter);
+		return array('list' => $list);
 	}
 
 	public function post($update, $after = null, $post_style = 'default')

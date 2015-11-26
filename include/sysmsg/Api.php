@@ -31,17 +31,25 @@ class KSysmsg_Api extends Ko_Mode_Sysmsg
 		}
 
 		$userlist = Ko_Tool_Adapter::VConv($userlist, array('list', array('user_baseinfo', array('logo80'))));
-		$photoApi = new KPhoto_Api();
-		$blogApi = new KBlog_Api();
-		$photoinfos = $photoApi->getPhotoInfos($photolist);
-		$albuminfos = $photoApi->getAlbumInfos($albumlist);
-		$bloginfos = $blogApi->aGetBlogInfos($bloglist);
+		$photoinfos = Ko_Apps_Rest::VInvoke('photo', 'GET', 'item/', array(
+			'filter_style' => 'photolist',
+			'filter' => $photolist,
+		));
+		$photoinfos = $photoinfos['list'];
+		$albuminfos = Ko_Apps_Rest::VInvoke('photo', 'GET', 'album/', array(
+			'filter' => $albumlist,
+		));
+		$albuminfos = $albuminfos['list'];
+		$bloginfos = Ko_Apps_Rest::VInvoke('blog', 'GET', 'item/', array(
+			'filter' => $bloglist,
+		));
+		$bloginfos = $bloginfos['list'];
 		foreach ($msglist as $k => &$v) {
 			if (self::PHOTO == $v['msgtype']) {
 				$v['content']['userinfo'] = $userlist[$v['content']['uid']];
 				$v['content']['albuminfo'] = $albuminfos[$v['content']['albumid']];
 				if (empty($v['content']['albuminfo'])) {
-					$this->vDelete(0, $v['msgid']);
+					//$this->vDelete(0, $v['msgid']);
 					unset($msglist[$k]);
 				} else {
 					$photolist = array();
@@ -55,7 +63,7 @@ class KSysmsg_Api extends Ko_Mode_Sysmsg
 					}
 					$v['content']['photolist'] = $photolist;
 					if (empty($photolist)) {
-						$this->vDelete(0, $v['msgid']);
+						//$this->vDelete(0, $v['msgid']);
 						unset($msglist[$k]);
 					}
 				}
@@ -63,7 +71,7 @@ class KSysmsg_Api extends Ko_Mode_Sysmsg
 				$v['content']['userinfo'] = $userlist[$v['content']['uid']];
 				$v['content']['bloginfo'] = $bloginfos[$v['content']['blogid']];
 				if (empty($v['content']['bloginfo'])) {
-					$this->vDelete(0, $v['msgid']);
+					//$this->vDelete(0, $v['msgid']);
 					unset($msglist[$k]);
 				}
 			}

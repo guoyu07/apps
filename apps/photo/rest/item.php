@@ -28,6 +28,10 @@ class MRest_item
 				'uid' => 'int',
 				'albumid' => 'int',
 			),
+			'photolist' => array('list', array('hash', array(
+				'uid' => 'int',
+				'photoid' => 'int',
+			))),
 		),
 		'poststylelist' => array(
 			'default' => 'any',
@@ -47,26 +51,33 @@ class MRest_item
 
 	public function getMulti($style, $page, $filter, $exstyle = null, $filter_style = 'default')
 	{
-		$num = $page['num'];
-		$loginApi = new \KUser_loginApi();
-		$loginuid = $loginApi->iGetLoginUid();
-
 		$photoApi = new MApi();
-		$albuminfo = $photoApi->getAlbumInfo($filter['uid'], $filter['albumid']);
-		if (empty($albuminfo) || ($albuminfo['isrecycle'] && $filter['uid'] != $loginuid)) {
-			throw new \Exception('获取数据失败', 1);
-		}
+		switch($filter_style)
+		{
+			case 'photolist':
+				$list = $photoApi->getPhotoInfos($filter);
+				return array('list' => $list);
+			default:
+				$num = $page['num'];
+				$loginApi = new \KUser_loginApi();
+				$loginuid = $loginApi->iGetLoginUid();
 
-		$photolist = $photoApi->getPhotoListBySeq($filter['uid'], $filter['albumid'],
-			$page['boundary'], $num, $next, $next_boundary, 'imageView2/2/w/240');
-		return array(
-			'list' => $photolist,
-			'page' => array(
-				'num' => $num,
-				'next' => $next,
-				'next_boundary' => $next_boundary,
-			),
-		);
+				$albuminfo = $photoApi->getAlbumInfo($filter['uid'], $filter['albumid']);
+				if (empty($albuminfo) || ($albuminfo['isrecycle'] && $filter['uid'] != $loginuid)) {
+					throw new \Exception('获取数据失败', 1);
+				}
+
+				$photolist = $photoApi->getPhotoListBySeq($filter['uid'], $filter['albumid'],
+					$page['boundary'], $num, $next, $next_boundary, 'imageView2/2/w/240');
+				return array(
+					'list' => $photolist,
+					'page' => array(
+						'num' => $num,
+						'next' => $next,
+						'next_boundary' => $next_boundary,
+					),
+				);
+		}
 	}
 
 	public function post($update, $after = null, $post_style = 'default')

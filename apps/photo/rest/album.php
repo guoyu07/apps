@@ -19,6 +19,12 @@ class MRest_album
 				'title' => 'string',
 			)),
 		),
+		'filterstylelist' => array(
+			'default' => array('list', array('hash', array(
+				'uid' => 'int',
+				'albumid' => 'int',
+			))),
+		),
 		'poststylelist' => array(
 			'default' => array('hash', array(
 				'title' => 'string',
@@ -35,6 +41,13 @@ class MRest_album
 	{
 		list($uid, $albumid) = explode('_', $str);
 		return compact('uid', 'albumid');
+	}
+
+	public function getMulti($style, $page, $filter, $exstyle = null, $filter_style = 'default')
+	{
+		$api = new MApi();
+		$list = $api->getAlbumInfos($filter);
+		return array('list' => $list);
 	}
 
 	public function post($update, $after = null)
