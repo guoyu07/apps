@@ -1,3 +1,0 @@
-/rest/(.*) /rest.php?uri=$1
-
-/$ photo/user

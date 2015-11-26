@@ -121,7 +121,7 @@ class MRest_item
 			\Ko_Apps_Rest::VInvoke('sysmsg', 'POST', 'item/', array(
 				'update' => array(
 					'uid' => 0,
-					'msgid' => \KSysmsg_Const::BLOG,
+					'msgtype' => \KSysmsg_Const::BLOG,
 					'content' => $content,
 					'mergeid' => $blogid,
 				),

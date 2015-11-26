@@ -165,7 +165,7 @@ class MRest_item
 			\Ko_Apps_Rest::VInvoke('sysmsg', 'POST', 'item/', array(
 				'update' => array(
 					'uid' => 0,
-					'msgid' => \KSysmsg_Const::PHOTO,
+					'msgtype' => \KSysmsg_Const::PHOTO,
 					'content' => $content,
 					'mergeid' => $albumid,
 				),

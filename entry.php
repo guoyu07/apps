@@ -24,7 +24,7 @@ define('KO_DB_NAME', 'demo');
 define('KO_MC_HOST', 'e77874bc68b911e4.m.cnbjalicm12pub001.ocs.aliyuncs.com:11211');
 define('KO_SMARTY_INC', CODE_ROOT . 'Smarty-3.1.21/libs/Smarty.class.php');
 define('KO_TEMPLATE_C_DIR', COMMON_RUNDATA_PATH . 'templates_c/');
-define('KO_XHPROF', true);
+define('KO_XHPROF', false);
 define('KO_XHPROF_LIBDIR', CODE_ROOT . 'xhprof/xhprof_lib/');
 define('KO_XHPROF_WEBBASE', 'http://' . XHPROF_DOMAIN . '/xhprof_html/');
 define('KO_XHPROF_TMPDIR', COMMON_RUNDATA_PATH . 'xhprof/');
