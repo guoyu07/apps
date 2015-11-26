@@ -26,6 +26,9 @@ class MRest_item
 			'default' => array('list', 'string'),
 		),
 		'poststylelist' => array(
+			'default' => array('hash', array(
+				'notonlyimage' => 'bool',
+			)),
 			'upload' => array('hash', array(
 				'file' => 'any',
 				'notonlyimage' => 'bool',
@@ -105,6 +108,24 @@ class MRest_item
 					throw new \Exception('文件上传失败', 1);
 				}
 				return array('key' => $sDest);
+			default:
+				$file = \Ko_Web_Request::AFile('file');
+				if (!$api->bUpload2Storage($file, $sDest, !$update['notonlyimage']))
+				{
+					throw new \Exception('文件上传失败', 1);
+				}
+				$data = array('key' => $sDest);
+				if (is_array($after_style))
+				{
+					switch($after_style['style'])
+					{
+						default:
+							$data['after'] = \Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$data['key'],
+								array('data_decorate' => $after_style['decorate']));
+							break;
+					}
+				}
+				return $data;
 		}
 	}
 }

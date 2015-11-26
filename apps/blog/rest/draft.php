@@ -6,20 +6,19 @@ class MRest_draft
 {
 	public static $s_aConf = array(
 		'putstylelist' => array(
-			'default' => array(
+			'default' => array('hash', array(
 				'title' => 'string',
 				'content' => 'string',
-			),
-			'title' => array(
+			)),
+			'title' => array('hash', array(
 				'title' => 'string',
-			),
+			)),
 		),
 	);
 
 	public function put($id, $update, $before = null, $after = null, $put_style = 'default')
 	{
-		$loginApi = new \KUser_loginApi();
-		$loginuid = $loginApi->iGetLoginUid();
+		$loginuid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
 
 		if ($loginuid) {
 			switch ($put_style)

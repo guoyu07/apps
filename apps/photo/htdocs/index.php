@@ -19,8 +19,7 @@ namespace APPS\photo;
 \Ko_Web_Route::VGet('album', function () {
 	static $num = 20;
 
-	$loginApi = new \KUser_loginApi();
-	$loginuid = $loginApi->iGetLoginUid();
+	$loginuid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
 
 	$uid = \Ko_Web_Request::IGet('uid');
 	$albumid = \Ko_Web_Request::IGet('albumid');
@@ -54,8 +53,7 @@ namespace APPS\photo;
 });
 
 \Ko_Web_Route::VGet('item', function () {
-	$loginApi = new \KUser_loginApi();
-	$loginuid = $loginApi->iGetLoginUid();
+	$loginuid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
 
 	$uid = \Ko_Web_Request::IGet('uid');
 	$photoid = \Ko_Web_Request::IGet('photoid');
@@ -70,7 +68,7 @@ namespace APPS\photo;
 	$photoinfo['image_src'] = \Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$photoinfo['image'], array('data_decorate' => ''));
 	$photoinfo['image_small'] = \Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$photoinfo['image'], array('data_decorate' => 'imageView2/1/w/60'));
 	$photoinfo['image_exif'] = \Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$photoinfo['image'], array('data_style' => 'exif'));
-	$agentinfo = \KUser_agentApi::get();
+	$agentinfo = \Ko_Apps_Rest::VInvoke('user', 'GET', 'agent/');
 	if ($agentinfo['screen']['height'] < 1000) {
 		$photoinfo['image'] = \Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$photoinfo['image'], array('data_decorate' => 'imageView2/2/w/600/h/600'));
 		$photoinfo['imagesize'] = 600;

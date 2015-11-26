@@ -21,7 +21,7 @@
         $('body').delegate('#btnOk', 'click', function(){
             var uid = $('#globaldata').data('uid');
             var nickname = $('#regloginform .nickname').val();
-            $.post('/rest/user/item/' + uid,
+            $.post('/user/rest/item/' + uid,
                     {'method': 'PUT', 'put_style': 'profile', 'update':{'nickname':nickname}},
                     function(data, status){
                         if (data.errno) {

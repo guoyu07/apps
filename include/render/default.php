@@ -4,8 +4,7 @@ class KRender_default extends KRender_base
 {
 	public function sRender()
 	{
-		$loginApi = new KUser_loginApi;
-		$uid = $loginApi->iGetLoginUid();
+		$uid = Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
 		$logininfo = $uid ? Ko_Tool_Adapter::VConv($uid, array('user_baseinfo', array('logo32'))) : array();
 
 		$head = new Ko_View_Render_Smarty;

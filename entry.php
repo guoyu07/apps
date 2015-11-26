@@ -24,7 +24,7 @@ define('KO_DB_NAME', 'demo');
 define('KO_MC_HOST', 'e77874bc68b911e4.m.cnbjalicm12pub001.ocs.aliyuncs.com:11211');
 define('KO_SMARTY_INC', CODE_ROOT . 'Smarty-3.1.21/libs/Smarty.class.php');
 define('KO_TEMPLATE_C_DIR', COMMON_RUNDATA_PATH . 'templates_c/');
-define('KO_XHPROF', false);
+define('KO_XHPROF', true);
 define('KO_XHPROF_LIBDIR', CODE_ROOT . 'xhprof/xhprof_lib/');
 define('KO_XHPROF_WEBBASE', 'http://' . XHPROF_DOMAIN . '/xhprof_html/');
 define('KO_XHPROF_TMPDIR', COMMON_RUNDATA_PATH . 'xhprof/');
@@ -51,10 +51,9 @@ Ko_Web_Event::On('ko.config', 'after', function () {
 	//	define('KO_TEMPLATE_DIR', $templateroot);
 	//}
 	if ('passport' === $appname) {
-		KUser_loginrefApi::VInit();
+		Ko_Apps_Rest::VInvoke('user', 'PUT', 'loginref/');
 	} else if ('www' === $appname) {
-		$loginApi = new KUser_loginApi();
-		$loginuid = $loginApi->iGetLoginUid();
+		$loginuid = Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
 		if (empty($loginuid)) {
 			Ko_Web_Response::VSetRedirect('http://'.PASSPORT_DOMAIN.'/user/login');
 			Ko_Web_Response::VSend();
@@ -97,8 +96,79 @@ function image_AAdapter($datalist)
 	return $newdatalist;
 }
 
+function user_AAdapter($datalist)
+{
+	$newdatalist = array();
+	$uids = array();
+	foreach ($datalist as $v)
+	{
+		$uids[] = $v[0];
+	}
+	$infos = Ko_Apps_Rest::VInvoke('user', 'GET', 'item/', array(
+		'filter' => $uids,
+	));
+	$infos = $infos['list'];
+	$nicknames = Ko_Apps_Rest::VInvoke('content', 'GET', 'item/', array(
+		'filter' => array(
+			'aid' => KContent_Const::USER_NICKNAME,
+			'ids' => $uids,
+		),
+	));
+	$nicknames = $nicknames['list'];
+	foreach ($datalist as $k => $v)
+	{
+		$newdatalist[$k] = isset($infos[$v[0]]) ? $infos[$v[0]] : array();
+		if (!empty($newdatalist[$k]))
+		{
+			$newdatalist[$k]['nickname'] = $nicknames[$v[0]];
+			user_VFillMoreInfo($newdatalist[$k], $v[1]);
+		}
+	}
+	return $newdatalist;
+}
+
+function user_VFillMoreInfo(&$info, $aMore)
+{
+	foreach ($aMore as $more)
+	{
+		switch($more)
+		{
+			case 'logo16':
+				$info['logo16'] = ('' === $info['logo'])
+					? 'http://'.IMG_DOMAIN.'/logo/16.png'
+					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/16'));
+				break;
+			case 'logo32':
+				$info['logo32'] = ('' === $info['logo'])
+					? 'http://'.IMG_DOMAIN.'/logo/32.png'
+					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/32'));
+				break;
+			case 'logo48':
+				$info['logo48'] = ('' === $info['logo'])
+					? 'http://'.IMG_DOMAIN.'/logo/48.png'
+					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/48'));
+				break;
+			case 'logo80':
+				$info['logo80'] = ('' === $info['logo'])
+					? 'http://'.IMG_DOMAIN.'/logo/80.png'
+					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/80'));
+				break;
+			case 'logo120':
+				$info['logo120'] = ('' === $info['logo'])
+					? 'http://'.IMG_DOMAIN.'/logo/120.png'
+					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/120'));
+				break;
+			case 'logo200':
+				$info['logo200'] = ('' === $info['logo'])
+					? 'http://'.IMG_DOMAIN.'/logo/200.png'
+					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/200'));
+				break;
+		}
+	}
+}
+
 Ko_Web_Event::On('ko.dispatch', 'before', function () {
-	Ko_Tool_Adapter::VOn('user_baseinfo', array('KUser_baseinfoApi', 'AAdapter'));
+	Ko_Tool_Adapter::VOn('user_baseinfo', 'user_AAdapter');
 	Ko_Tool_Adapter::VOn('image_baseinfo', 'image_AAdapter');
 	$appname = Ko_Web_Config::SGetAppName();
 	if ('zc' === $appname) {

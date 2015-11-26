@@ -36,7 +36,7 @@ class MApi extends \Ko_Mode_Content
 
 	protected function _sDataUrl2Link($sData)
 	{
-		$data = Ko_Apps_Rest::VInvoke('storage', 'POST', 'dataurl/', array('update' => $sData), $errno);
+		$data = \Ko_Apps_Rest::VInvoke('storage', 'POST', 'dataurl/', array('update' => $sData), $errno);
 		if ($errno)
 		{
 			return parent::_sDataUrl2Link($sData);

@@ -25,7 +25,7 @@
             var uid = $('#globaldata').data('uid');
             var oldpasswd = $('#regloginform .oldpasswd').val();
             var newpasswd = $('#regloginform .newpasswd').val();
-            $.post('/rest/user/item/' + uid,
+            $.post('/user/rest/item/' + uid,
                     {'method': 'PUT', 'put_style': 'passwd', 'update':{'oldpasswd':oldpasswd, 'newpasswd':newpasswd}},
                     function(data, status){
                 if (data.errno) {

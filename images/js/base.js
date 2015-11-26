@@ -1,6 +1,6 @@
 (function(){
 	$('body').delegate('#logoutlink', 'click', function(){
-		$.post('/rest/user/login/' + $('#globaldata').data('uid'), {'method':'DELETE'}, function(data, status){
+		$.post('/user/rest/login/' + $('#globaldata').data('uid'), {'method':'DELETE'}, function(data, status){
 			if (data.errno) {
 				alert(data.error);
 			} else {
@@ -14,7 +14,7 @@
 	$('body').delegate('#loginlogodiv', 'mouseleave', function(){
 		$('#settingmenu').hide();
 	});
-	$.post('/rest/user/agent/',
+	$.post('/user/rest/agent/',
 		{'method':'PUT', 'update': {'screen': {'width':window.screen.width, 'height':window.screen.height}}},
 		function(data, status){
 	}, 'json');

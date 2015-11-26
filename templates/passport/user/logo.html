@@ -17,7 +17,7 @@
     (function(){
         $(document).ready(function() {
             var uploaderConfig = {
-                url: '/rest/image/item/',
+                url: '/storage/rest/item/',
                 multi_selection: false,
                 multipart_params: {after_style: 'default', after_decorate: 'imageView2/3/w/400/h/400'},
                 filters: {
@@ -52,7 +52,7 @@
                         });
                     },
                     Error: function (up, err) {
-                        alert("Error #" + err.code + ": " + err.message + "\n");
+                        //alert("Error #" + err.code + ": " + err.message + "\n");
                         divUploader.disableBrowse(false);
                     }
                 }
@@ -80,7 +80,7 @@
                     var w = $('#logodiv').width();
                     var h = $('#logodiv').height();
 
-                    $.post('/rest/user/logo/', {
+                    $.post('/user/rest/logo/', {
                         'update': {
                             'fileid': fileid,
                             'width': width,

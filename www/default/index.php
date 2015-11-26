@@ -1,10 +1,15 @@
 <?php
 
 $num = 10;
-$sysmsgApi = new KSysmsg_Api;
-$msglist = $sysmsgApi->getIndexList('0_0', $num, $next, $next_boundary);
+$msglist = Ko_Apps_Rest::VInvoke('sysmsg', 'GET', 'item/', array(
+	'page' => array(
+		'num' => $num,
+		'boundary' => '0_0',
+	),
+));
+$page = $msglist['page'];
+$msglist = $msglist['list'];
 
-$page = compact('num', 'next', 'next_boundary');
 $render = new KRender_default;
 $render->oSetTemplate('default/index.html')
 	->oSetData('msglist', $msglist)

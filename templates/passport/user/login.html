@@ -29,7 +29,7 @@
         $('body').delegate('#btnOk', 'click', function(){
             var username = $('#regloginform .username').val();
             var passwd = $('#regloginform .passwd').val();
-            $.post('/rest/user/login/', {'update':{'username':username, 'passwd':passwd}}, function(data, status){
+            $.post('/user/rest/login/', {'update':{'username':username, 'passwd':passwd}}, function(data, status){
                 if (data.errno) {
                     alert(data.error);
                 } else {

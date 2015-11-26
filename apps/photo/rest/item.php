@@ -24,10 +24,10 @@ class MRest_item
 			)),
 		),
 		'filterstylelist' => array(
-			'default' => array(
+			'default' => array('hash', array(
 				'uid' => 'int',
 				'albumid' => 'int',
-			),
+			)),
 			'photolist' => array('list', array('hash', array(
 				'uid' => 'int',
 				'photoid' => 'int',
@@ -59,8 +59,7 @@ class MRest_item
 				return array('list' => $list);
 			default:
 				$num = $page['num'];
-				$loginApi = new \KUser_loginApi();
-				$loginuid = $loginApi->iGetLoginUid();
+				$loginuid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
 
 				$albuminfo = $photoApi->getAlbumInfo($filter['uid'], $filter['albumid']);
 				if (empty($albuminfo) || ($albuminfo['isrecycle'] && $filter['uid'] != $loginuid)) {
@@ -96,8 +95,7 @@ class MRest_item
 		$image = $data['key'];
 		$title = $file['name'];
 
-		$loginApi = new \KUser_loginApi();
-		$uid = $loginApi->iGetLoginUid();
+		$uid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
 
 		$photoApi = new MApi;
 		switch ($post_style)
@@ -125,8 +123,7 @@ class MRest_item
 
 	public function put($id, $update, $before = null, $after = null, $put_style = 'default')
 	{
-		$loginApi = new \KUser_loginApi();
-		$uid = $loginApi->iGetLoginUid();
+		$uid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
 		if ($uid != $id['uid']) {
 			throw new \Exception('修改照片失败', 1);
 		}
@@ -147,8 +144,7 @@ class MRest_item
 
 	public function delete($id, $before = null)
 	{
-		$loginApi = new \KUser_loginApi();
-		$uid = $loginApi->iGetLoginUid();
+		$uid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
 		if ($uid != $id['uid']) {
 			throw new \Exception('删除照片失败', 1);
 		}
@@ -166,8 +162,14 @@ class MRest_item
 			$photoApi = new MApi;
 			$content = compact('uid', 'albumid', 'photoid');
 			$content['photolist'] = $photoApi->getPhotoList($uid, $albumid, 0, 9, $total);
-			$sysmsgApi = new \KSysmsg_Api();
-			$sysmsgApi->iSend(0, \KSysmsg_Api::PHOTO, $content, $albumid);
+			\Ko_Apps_Rest::VInvoke('sysmsg', 'POST', 'item/', array(
+				'update' => array(
+					'uid' => 0,
+					'msgid' => \KSysmsg_Const::PHOTO,
+					'content' => $content,
+					'mergeid' => $albumid,
+				),
+			));
 		}
 	}
 }

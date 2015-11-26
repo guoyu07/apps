@@ -28,7 +28,7 @@
             var username = $('#regloginform .username').val();
             var passwd = $('#regloginform .passwd').val();
             var nickname = $('#regloginform .nickname').val();
-            $.post('/rest/user/item/', {'update':{'username':username, 'passwd':passwd, 'nickname':nickname}}, function(data, status){
+            $.post('/user/rest/item/', {'update':{'username':username, 'passwd':passwd, 'nickname':nickname}}, function(data, status){
                 if (data.errno) {
                     alert(data.error);
                 } else {

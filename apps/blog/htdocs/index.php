@@ -33,8 +33,7 @@ namespace APPS\blog;
 		}
 	}
 	if ('回收站' === $tag) {
-		$loginApi = new \KUser_loginApi();
-		$loginuid = $loginApi->iGetLoginUid();
+		$loginuid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
 		if ($loginuid != $uid) {
 			\Ko_Web_Response::VSetRedirect('?uid='.$uid);
 			\Ko_Web_Response::VSend();
@@ -65,8 +64,7 @@ namespace APPS\blog;
 });
 
 \Ko_Web_Route::VGet('post', function () {
-	$loginApi = new \KUser_loginApi();
-	$uid = $loginApi->iGetLoginUid();
+	$uid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
 	$blogid = \Ko_Web_Request::IGet('blogid');
 
 	$userinfo = \Ko_Tool_Adapter::VConv($uid, array('user_baseinfo', array('logo80')));
