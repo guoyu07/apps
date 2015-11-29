@@ -50,16 +50,17 @@ Ko_Web_Event::On('ko.config', 'after', function () {
 	//if (strlen($templateroot) && is_dir($templateroot)) {
 	//	define('KO_TEMPLATE_DIR', $templateroot);
 	//}
-	//if ('passport' === $appname) {
-	//	Ko_Apps_Rest::VInvoke('user', 'PUT', 'loginref/');
-	//} else if ('home' === $appname) {
-	//	$loginuid = Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
-	//	if (empty($loginuid)) {
-	//		Ko_Web_Response::VSetRedirect('http://'.PASSPORT_DOMAIN.'/user/login');
-	//		Ko_Web_Response::VSend();
-	//		exit;
-	//	}
-	//}
+	$host = Ko_Web_Request::SHttpHost();
+	if (PASSPORT_DOMAIN === $host) {
+		Ko_Apps_Rest::VInvoke('user', 'PUT', 'loginref/');
+	} else if (WWW_DOMAIN === $host) {
+		$loginuid = Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+		if (empty($loginuid)) {
+			Ko_Web_Response::VSetRedirect('http://'.PASSPORT_DOMAIN.'/user/login');
+			Ko_Web_Response::VSend();
+			exit;
+		}
+	}
 });
 
 Ko_Web_Event::On('ko.error', '500', function ($errno, $errstr, $errfile, $errline, $errcontext) {
