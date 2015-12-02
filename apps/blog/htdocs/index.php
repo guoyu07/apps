@@ -55,7 +55,7 @@ namespace APPS\blog;
 	);
 	$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/');
 	$render = $render['key'];
-	$render->oSetTemplate('default/blog/user.html')
+	$render->oSetTemplate('user.html')
 		->oSetData('tag', $tag)
 		->oSetData('userinfo', $userinfo)
 		->oSetData('taginfos', $taginfos)
@@ -96,7 +96,7 @@ namespace APPS\blog;
 
 	$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/');
 	$render = $render['key'];
-	$render->oSetTemplate('default/blog/post.html')
+	$render->oSetTemplate('post.html')
 		->oSetData('userinfo', $userinfo)
 		->oSetData('bloginfo', $bloginfo)
 		->oSetData('blogcontent', $htmlrender)
@@ -133,7 +133,7 @@ namespace APPS\blog;
 
 	$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/');
 	$render = $render['key'];
-	$render->oSetTemplate('default/blog/item.html')
+	$render->oSetTemplate('item.html')
 		->oSetData('tag', $tag)
 		->oSetData('prevnext', $prevnextInfo)
 		->oSetData('userinfo', $userinfo)

@@ -6,14 +6,14 @@ namespace APPS\user;
 {
 	$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/', array('post_style' => 'passport'));
 	$render = $render['key'];
-	$render->oSetTemplate('passport/user/login.html')->oSend();
+	$render->oSetTemplate('login.html')->oSend();
 });
 
 \Ko_Web_Route::VGet('reg', function()
 {
 	$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/', array('post_style' => 'passport'));
 	$render = $render['key'];
-	$render->oSetTemplate('passport/user/reg.html')->oSend();
+	$render->oSetTemplate('reg.html')->oSend();
 });
 
 \Ko_Web_Route::VGet('logo', function()
@@ -23,7 +23,7 @@ namespace APPS\user;
 	{
 		$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/', array('post_style' => 'passport'));
 		$render = $render['key'];
-		$render->oSetTemplate('passport/user/logo.html')->oSend();
+		$render->oSetTemplate('logo.html')->oSend();
 	}
 	else
 	{
@@ -39,7 +39,7 @@ namespace APPS\user;
 	{
 		$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/', array('post_style' => 'passport'));
 		$render = $render['key'];
-		$render->oSetTemplate('passport/user/passwd.html')->oSend();
+		$render->oSetTemplate('passwd.html')->oSend();
 	}
 	else
 	{
@@ -55,7 +55,7 @@ namespace APPS\user;
 	{
 		$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/', array('post_style' => 'passport'));
 		$render = $render['key'];
-		$render->oSetTemplate('passport/user/profile.html')->oSend();
+		$render->oSetTemplate('profile.html')->oSend();
 	}
 	else
 	{

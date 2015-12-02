@@ -11,7 +11,7 @@ namespace APPS\photo;
 
 	$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/');
 	$render = $render['key'];
-	$render->oSetTemplate('default/photo/user.html')
+	$render->oSetTemplate('user.html')
 		->oSetData('userinfo', $userinfo)
 		->oSetData('albumlist', $albumlist)
 		->oSend();
@@ -42,7 +42,7 @@ namespace APPS\photo;
 		$allalbumlist = $photoApi->getAllAlbumList($uid);
 		$render->oSetData('allalbumlist', $allalbumlist);
 	}
-	$render->oSetTemplate('default/photo/album.html')
+	$render->oSetTemplate('album.html')
 		->oSetData('userinfo', $userinfo)
 		->oSetData('albuminfo', $albuminfo)
 		->oSetData('photolist', $photolist)
@@ -116,7 +116,7 @@ namespace APPS\photo;
 
 	$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/');
 	$render = $render['key'];
-	$render->oSetTemplate('default/photo/item.html')
+	$render->oSetTemplate('item.html')
 		->oSetData('userinfo', $userinfo)
 		->oSetData('albuminfo', $albuminfo)
 		->oSetData('photoinfo', $photoinfo)

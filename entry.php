@@ -46,10 +46,10 @@ Ko_Web_Event::On('ko.config', 'after', function () {
 		Ko_Web_Response::VSend();
 		exit;
 	}
-	//$templateroot = Ko_Web_Config::SGetValue('templateroot');
-	//if (strlen($templateroot) && is_dir($templateroot)) {
-	//	define('KO_TEMPLATE_DIR', $templateroot);
-	//}
+	$templateroot = Ko_Web_Config::SGetValue('templateroot');
+	if (strlen($templateroot) && is_dir($templateroot)) {
+		define('KO_TEMPLATE_DIR', $templateroot);
+	}
 	$host = Ko_Web_Request::SHttpHost();
 	if (PASSPORT_DOMAIN === $host) {
 		Ko_Apps_Rest::VInvoke('user', 'PUT', 'loginref/');

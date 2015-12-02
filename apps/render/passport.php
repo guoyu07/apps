@@ -2,22 +2,18 @@
 
 namespace APPS\render;
 
-class Mpassport extends \Ko_View_Render_Smarty
+class Mpassport extends Mbase
 {
 	public function sRender()
 	{
-		$uid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
-		$logininfo = $uid ? \Ko_Tool_Adapter::VConv($uid, array('user_baseinfo', array('logo32'))) : array();
+		$smarty = new \Ko_View_Smarty();
+		$smarty->vSetTemplateDir(KO_APPS_DIR.'render/templates/');
 
-		$head = new \Ko_View_Render_Smarty;
-		$head->oSetTemplate('passport/common/header.html')
-			->oSetData('IMG_DOMAIN', IMG_DOMAIN)
-			->oSetData('WWW_DOMAIN', WWW_DOMAIN)
-			->oSetData('PASSPORT_DOMAIN', PASSPORT_DOMAIN)
-			->oSetData('logininfo', $logininfo);
+		$head = new Mbase($smarty);
+		$head->oSetTemplate('passport/header.html');
 
-		$tail = new \Ko_View_Render_Smarty;
-		$tail->oSetTemplate('passport/common/footer.html');
+		$tail = new Mbase($smarty);
+		$tail->oSetTemplate('passport/footer.html');
 
 		return $head->sRender().parent::sRender().$tail->sRender();
 	}
