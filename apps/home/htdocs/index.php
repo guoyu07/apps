@@ -12,7 +12,8 @@ $msglist = \Ko_Apps_Rest::VInvoke('sysmsg', 'GET', 'item/', array(
 $page = $msglist['page'];
 $msglist = $msglist['list'];
 
-$render = new \KRender_default;
+$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/');
+$render = $render['key'];
 $render->oSetTemplate('default/index.html')
 	->oSetData('msglist', $msglist)
 	->oSetData('page', $page)

@@ -9,7 +9,8 @@ namespace APPS\photo;
 	$albumlist = $photoApi->getAllAlbumDigest($uid);
 	$userinfo = \Ko_Tool_Adapter::VConv($uid, array('user_baseinfo', array('logo80')));
 
-	$render = new \KRender_default;
+	$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/');
+	$render = $render['key'];
 	$render->oSetTemplate('default/photo/user.html')
 		->oSetData('userinfo', $userinfo)
 		->oSetData('albumlist', $albumlist)
@@ -35,7 +36,8 @@ namespace APPS\photo;
 	$userinfo = \Ko_Tool_Adapter::VConv($uid, array('user_baseinfo', array('logo80')));
 	$photolist = $photoApi->getPhotoListBySeq($uid, $albumid, '0_0_0', $num, $next, $next_boundary, 'imageView2/2/w/240');
 
-	$render = new \KRender_default;
+	$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/');
+	$render = $render['key'];
 	if ($loginuid == $uid) {
 		$allalbumlist = $photoApi->getAllAlbumList($uid);
 		$render->oSetData('allalbumlist', $allalbumlist);
@@ -112,7 +114,8 @@ namespace APPS\photo;
 		}
 	}
 
-	$render = new \KRender_default;
+	$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/');
+	$render = $render['key'];
 	$render->oSetTemplate('default/photo/item.html')
 		->oSetData('userinfo', $userinfo)
 		->oSetData('albuminfo', $albuminfo)
