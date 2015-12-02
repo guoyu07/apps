@@ -42,7 +42,8 @@ namespace APPS\blog;
 	}
 	$blogids = \Ko_Tool_Utils::AObjs2ids($bloglist, 'blogid');
 
-	$contentApi = new \KContent_Api();
+	$contentApi = \Ko_Apps_Rest::VInvoke('content', 'POST', 'object/');
+	$contentApi = $contentApi['key'];
 	$htmlrender = new \Ko_View_Render_HTML($contentApi);
 	$htmlrender->oSetData(\KContent_Const::BLOG_TITLE, $blogids);
 	$htmlrender->oSetData(\KContent_Const::BLOG_CONTENT, array('ids' => $blogids, 'maxlength' => 1000));
@@ -72,7 +73,8 @@ namespace APPS\blog;
 	$blogApi = new MApi();
 	$taginfos = $blogApi->aGetAllTaginfo($uid);
 
-	$contentApi = new \KContent_Api();
+	$contentApi = \Ko_Apps_Rest::VInvoke('content', 'POST', 'object/');
+	$contentApi = $contentApi['key'];
 	$htmlrender = new \Ko_View_Render_HTML($contentApi);
 	if ($blogid) {
 		$bloginfo = $blogApi->aGet($uid, $blogid);
@@ -121,7 +123,8 @@ namespace APPS\blog;
 	}
 	$prevnextInfo = $blogApi->aGetPrevNextTitle($uid, $blogid, $tag);
 
-	$contentApi = new \KContent_Api();
+	$contentApi = \Ko_Apps_Rest::VInvoke('content', 'POST', 'object/');
+	$contentApi = $contentApi['key'];
 	$htmlrender = new \Ko_View_Render_HTML($contentApi);
 	$htmlrender->oSetData(\KContent_Const::BLOG_TITLE, $blogid);
 	$htmlrender->oSetData(\KContent_Const::BLOG_CONTENT, $blogid);
