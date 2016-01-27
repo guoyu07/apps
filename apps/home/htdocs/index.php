@@ -3,7 +3,7 @@
 namespace APPS\home;
 
 $num = 10;
-$msglist = \Ko_Apps_Rest::VInvoke('sysmsg', 'GET', 'item/', array(
+$msglist = \Ko_App_Rest::VInvoke('sysmsg', 'GET', 'item/', array(
 	'page' => array(
 		'num' => $num,
 		'boundary' => '0_0',
@@ -12,7 +12,7 @@ $msglist = \Ko_Apps_Rest::VInvoke('sysmsg', 'GET', 'item/', array(
 $page = $msglist['page'];
 $msglist = $msglist['list'];
 
-$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/');
+$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/');
 $render = $render['key'];
 $render->oSetTemplate('index.html')
 	->oSetData('msglist', $msglist)

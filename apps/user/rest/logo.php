@@ -24,7 +24,7 @@ class MRest_logo
 
 	public function post($update, $after = null)
 	{
-		$content = \Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$update['fileid'], array('data_style' => 'content'));
+		$content = \Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$update['fileid'], array('data_style' => 'content'));
 		if ('' === $content)
 		{
 			throw new \Exception('获取原文件失败', 1);
@@ -92,7 +92,7 @@ class MRest_logo
 		{
 			throw new \Exception('文件转换失败', 3);
 		}
-		$data = \Ko_Apps_Rest::VInvoke('storage', 'POST', 'item/', array(
+		$data = \Ko_App_Rest::VInvoke('storage', 'POST', 'item/', array(
 			'post_style' => 'content',
 			'update' => array(
 				'content' => $dst,

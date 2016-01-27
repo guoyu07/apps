@@ -4,24 +4,24 @@ namespace APPS\user;
 
 \Ko_Web_Route::VGet('login', function()
 {
-	$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/', array('post_style' => 'passport'));
+	$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/', array('post_style' => 'passport'));
 	$render = $render['key'];
 	$render->oSetTemplate('login.html')->oSend();
 });
 
 \Ko_Web_Route::VGet('reg', function()
 {
-	$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/', array('post_style' => 'passport'));
+	$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/', array('post_style' => 'passport'));
 	$render = $render['key'];
 	$render->oSetTemplate('reg.html')->oSend();
 });
 
 \Ko_Web_Route::VGet('logo', function()
 {
-	$uid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+	$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 	if ($uid)
 	{
-		$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/', array('post_style' => 'passport'));
+		$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/', array('post_style' => 'passport'));
 		$render = $render['key'];
 		$render->oSetTemplate('logo.html')->oSend();
 	}
@@ -34,10 +34,10 @@ namespace APPS\user;
 
 \Ko_Web_Route::VGet('passwd', function()
 {
-	$uid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+	$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 	if ($uid)
 	{
-		$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/', array('post_style' => 'passport'));
+		$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/', array('post_style' => 'passport'));
 		$render = $render['key'];
 		$render->oSetTemplate('passwd.html')->oSend();
 	}
@@ -50,10 +50,10 @@ namespace APPS\user;
 
 \Ko_Web_Route::VGet('profile', function()
 {
-	$uid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+	$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 	if ($uid)
 	{
-		$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/', array('post_style' => 'passport'));
+		$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/', array('post_style' => 'passport'));
 		$render = $render['key'];
 		$render->oSetTemplate('profile.html')->oSend();
 	}

@@ -58,7 +58,7 @@ class MRest_item
 
 	public function post($update, $after = null, $post_style = 'default')
 	{
-		$loginuid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$loginuid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 
 		if (0 == strlen($update['title'])) {
 			throw new \Exception('请输入博客标题', 1);
@@ -70,10 +70,10 @@ class MRest_item
 			throw new \Exception('添加博客失败', 2);
 		}
 
-		\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::DRAFT_CONTENT.'_'.$loginuid, array(
+		\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::DRAFT_CONTENT.'_'.$loginuid, array(
 			'update' => '',
 		));
-		\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::DRAFT_TITLE.'_'.$loginuid, array(
+		\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::DRAFT_TITLE.'_'.$loginuid, array(
 			'update' => '',
 		));
 
@@ -84,7 +84,7 @@ class MRest_item
 
 	public function put($id, $update, $before = null, $after = null, $put_style = 'default')
 	{
-		$loginuid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$loginuid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 		if ($loginuid != $id['uid']) {
 			throw new \Exception('修改博客失败', 1);
 		}
@@ -104,7 +104,7 @@ class MRest_item
 
 	public function delete($id, $before = null)
 	{
-		$loginuid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$loginuid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 		if ($loginuid != $id['uid']) {
 			throw new \Exception('删除博客失败', 1);
 		}
@@ -118,7 +118,7 @@ class MRest_item
 	{
 		if (18 <= $uid && $uid <= 21) {
 			$content = compact('uid', 'blogid');
-			\Ko_Apps_Rest::VInvoke('sysmsg', 'POST', 'item/', array(
+			\Ko_App_Rest::VInvoke('sysmsg', 'POST', 'item/', array(
 				'update' => array(
 					'uid' => 0,
 					'msgtype' => \KSysmsg_Const::BLOG,

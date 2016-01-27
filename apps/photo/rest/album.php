@@ -56,7 +56,7 @@ class MRest_album
 			throw new \Exception('请输入相册标题', 1);
 		}
 
-		$uid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 
 		$photoApi = new MApi();
 		$albumid = $photoApi->addAlbum($uid, $update['title'], $update['desc']);
@@ -68,7 +68,7 @@ class MRest_album
 
 	public function put($id, $update, $before = null, $after = null, $put_style = 'default')
 	{
-		$uid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 
 		if ($uid != $id['uid']) {
 			throw new \Exception('修改相册失败', 1);
@@ -89,7 +89,7 @@ class MRest_album
 
 	public function delete($id, $before = null)
 	{
-		$uid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 		if ($uid != $id['uid']) {
 			throw new \Exception('删除相册失败', 1);
 		}

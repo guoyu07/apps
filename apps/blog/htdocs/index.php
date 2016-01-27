@@ -33,7 +33,7 @@ namespace APPS\blog;
 		}
 	}
 	if ('回收站' === $tag) {
-		$loginuid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$loginuid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 		if ($loginuid != $uid) {
 			\Ko_Web_Response::VSetRedirect('?uid='.$uid);
 			\Ko_Web_Response::VSend();
@@ -42,7 +42,7 @@ namespace APPS\blog;
 	}
 	$blogids = \Ko_Tool_Utils::AObjs2ids($bloglist, 'blogid');
 
-	$contentApi = \Ko_Apps_Rest::VInvoke('content', 'POST', 'object/');
+	$contentApi = \Ko_App_Rest::VInvoke('content', 'POST', 'object/');
 	$contentApi = $contentApi['key'];
 	$htmlrender = new \Ko_View_Render_HTML($contentApi);
 	$htmlrender->oSetData(\KContent_Const::BLOG_TITLE, $blogids);
@@ -53,7 +53,7 @@ namespace APPS\blog;
 		'no' => $page,
 		'data_total' => $total,
 	);
-	$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/');
+	$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/');
 	$render = $render['key'];
 	$render->oSetTemplate('user.html')
 		->oSetData('tag', $tag)
@@ -66,7 +66,7 @@ namespace APPS\blog;
 });
 
 \Ko_Web_Route::VGet('post', function () {
-	$uid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+	$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 	$blogid = \Ko_Web_Request::IGet('blogid');
 
 	$userinfo = \Ko_Tool_Adapter::VConv($uid, array('user_baseinfo', array('logo80')));
@@ -74,7 +74,7 @@ namespace APPS\blog;
 	$blogApi = new MApi();
 	$taginfos = $blogApi->aGetAllTaginfo($uid);
 
-	$contentApi = \Ko_Apps_Rest::VInvoke('content', 'POST', 'object/');
+	$contentApi = \Ko_App_Rest::VInvoke('content', 'POST', 'object/');
 	$contentApi = $contentApi['key'];
 	$htmlrender = new \Ko_View_Render_HTML($contentApi);
 	if ($blogid) {
@@ -94,7 +94,7 @@ namespace APPS\blog;
 		$htmlrender->oSetData(\KContent_Const::DRAFT_TITLE, $uid);
 	}
 
-	$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/');
+	$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/');
 	$render = $render['key'];
 	$render->oSetTemplate('post.html')
 		->oSetData('userinfo', $userinfo)
@@ -125,13 +125,13 @@ namespace APPS\blog;
 	}
 	$prevnextInfo = $blogApi->aGetPrevNextTitle($uid, $blogid, $tag);
 
-	$contentApi = \Ko_Apps_Rest::VInvoke('content', 'POST', 'object/');
+	$contentApi = \Ko_App_Rest::VInvoke('content', 'POST', 'object/');
 	$contentApi = $contentApi['key'];
 	$htmlrender = new \Ko_View_Render_HTML($contentApi);
 	$htmlrender->oSetData(\KContent_Const::BLOG_TITLE, $blogid);
 	$htmlrender->oSetData(\KContent_Const::BLOG_CONTENT, $blogid);
 
-	$render = \Ko_Apps_Rest::VInvoke('render', 'POST', 'object/');
+	$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/');
 	$render = $render['key'];
 	$render->oSetTemplate('item.html')
 		->oSetData('tag', $tag)

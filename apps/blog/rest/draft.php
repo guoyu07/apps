@@ -18,21 +18,21 @@ class MRest_draft
 
 	public function put($id, $update, $before = null, $after = null, $put_style = 'default')
 	{
-		$loginuid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$loginuid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 
 		if ($loginuid) {
 			switch ($put_style)
 			{
 				case 'default':
-					\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::DRAFT_CONTENT.'_'.$loginuid, array(
+					\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::DRAFT_CONTENT.'_'.$loginuid, array(
 						'update' => $update['content'],
 					));
-					\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::DRAFT_TITLE.'_'.$loginuid, array(
+					\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::DRAFT_TITLE.'_'.$loginuid, array(
 						'update' => $update['title'],
 					));
 					break;
 				case 'title':
-					\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::DRAFT_TITLE.'_'.$loginuid, array(
+					\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::DRAFT_TITLE.'_'.$loginuid, array(
 						'update' => $update['title'],
 					));
 					break;

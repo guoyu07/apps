@@ -17,7 +17,7 @@ class MApi extends \Ko_Busi_Api
 		}
 		$ret = array();
 		if (!empty($blogids)) {
-			$aTitle = \Ko_Apps_Rest::VInvoke('content', 'GET', 'item/', array(
+			$aTitle = \Ko_App_Rest::VInvoke('content', 'GET', 'item/', array(
 				'filter' => array(
 					'aid' => \KContent_Const::BLOG_TITLE,
 					'ids' => $blogids,
@@ -105,7 +105,7 @@ class MApi extends \Ko_Busi_Api
 			}
 			$v = $infos[$v['blogid']];
 			if (strlen($v['cover'])) {
-				$v['cover'] = \Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$v['cover'], array('data_decorate' => 'imageView2/1/w/300/h/200'));
+				$v['cover'] = \Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$v['cover'], array('data_decorate' => 'imageView2/1/w/300/h/200'));
 			}
 		}
 		unset($v);
@@ -150,7 +150,7 @@ class MApi extends \Ko_Busi_Api
 	{
 		$blogids = \Ko_Tool_Utils::AObjs2ids($list, 'blogid');
 		$infos = $this->blogDao->aGetDetails($list);
-		$aText = \Ko_Apps_Rest::VInvoke('content', 'GET', 'items/', array(
+		$aText = \Ko_App_Rest::VInvoke('content', 'GET', 'items/', array(
 			'filter' => array(
 				\KContent_Const::BLOG_TITLE => $blogids,
 				\KContent_Const::BLOG_CONTENT => array('ids' => $blogids, 'maxlength' => 1000, 'ext' => '...'),
@@ -165,7 +165,7 @@ class MApi extends \Ko_Busi_Api
 				$v['title'] = $aText[\KContent_Const::BLOG_TITLE][$v['blogid']];
 				$v['content'] = $aText[\KContent_Const::BLOG_CONTENT][$v['blogid']];
 				if (strlen($v['cover'])) {
-					$v['cover'] = \Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$v['cover'], array('data_decorate' => 'imageView2/1/w/300/h/200'));
+					$v['cover'] = \Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$v['cover'], array('data_decorate' => 'imageView2/1/w/300/h/200'));
 				}
 			}
 		}
@@ -198,10 +198,10 @@ class MApi extends \Ko_Busi_Api
 		$data['mtime'] = $data['ctime'];
 		$blogid = $this->blogDao->iInsert($data);
 		if ($blogid) {
-			\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_TITLE.'_'.$blogid, array(
+			\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_TITLE.'_'.$blogid, array(
 				'update' => $title,
 			));
-			\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_CONTENT.'_'.$blogid, array(
+			\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_CONTENT.'_'.$blogid, array(
 				'update' => $content,
 			));
 
@@ -228,10 +228,10 @@ class MApi extends \Ko_Busi_Api
 		$subtags = array_diff($oldtagarr, $newtagarr);
 		$this->_vSubTags($uid, $blogid, $subtags);
 
-		\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_TITLE.'_'.$blogid, array(
+		\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_TITLE.'_'.$blogid, array(
 			'update' => $title,
 		));
-		\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_CONTENT.'_'.$blogid, array(
+		\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_CONTENT.'_'.$blogid, array(
 			'update' => $content,
 		));
 
@@ -254,10 +254,10 @@ class MApi extends \Ko_Busi_Api
 		}
 		if ('回收站' === $info['tags']) {
 			$this->_vSubTags($uid, $blogid, array('回收站'));
-			\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_TITLE.'_'.$blogid, array(
+			\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_TITLE.'_'.$blogid, array(
 				'update' => '',
 			));
-			\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_CONTENT.'_'.$blogid, array(
+			\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_CONTENT.'_'.$blogid, array(
 				'update' => '',
 			));
 			return $this->blogDao->iDelete($blogkey);
@@ -340,7 +340,7 @@ class MApi extends \Ko_Busi_Api
 
 	private function _sGetCover($content)
 	{
-		$data = \Ko_Apps_Rest::VInvoke('storage', 'POST', 'cover/', array('update' => $content));
+		$data = \Ko_App_Rest::VInvoke('storage', 'POST', 'cover/', array('update' => $content));
 		return $data['key'];
 	}
 }

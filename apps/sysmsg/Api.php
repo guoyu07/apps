@@ -30,16 +30,16 @@ class MApi extends \Ko_Mode_Sysmsg
 		}
 
 		$userlist = \Ko_Tool_Adapter::VConv($userlist, array('list', array('user_baseinfo', array('logo80'))));
-		$photoinfos = \Ko_Apps_Rest::VInvoke('photo', 'GET', 'item/', array(
+		$photoinfos = \Ko_App_Rest::VInvoke('photo', 'GET', 'item/', array(
 			'filter_style' => 'photolist',
 			'filter' => $photolist,
 		));
 		$photoinfos = $photoinfos['list'];
-		$albuminfos = \Ko_Apps_Rest::VInvoke('photo', 'GET', 'album/', array(
+		$albuminfos = \Ko_App_Rest::VInvoke('photo', 'GET', 'album/', array(
 			'filter' => $albumlist,
 		));
 		$albuminfos = $albuminfos['list'];
-		$bloginfos = \Ko_Apps_Rest::VInvoke('blog', 'GET', 'item/', array(
+		$bloginfos = \Ko_App_Rest::VInvoke('blog', 'GET', 'item/', array(
 			'filter' => $bloglist,
 		));
 		$bloginfos = $bloginfos['list'];
@@ -55,7 +55,7 @@ class MApi extends \Ko_Mode_Sysmsg
 					foreach ($v['content']['photolist'] as $photo) {
 						if (!empty($photoinfos[$photo['photoid']])
 							&& $photoinfos[$photo['photoid']]['albumid'] == $photo['albumid']) {
-							$photo['image'] = \Ko_Apps_Rest::VInvoke('storage', 'GET',
+							$photo['image'] = \Ko_App_Rest::VInvoke('storage', 'GET',
 								'item/'.$photoinfos[$photo['photoid']]['image'], array('data_decorate' => 'imageView2/2/w/480/h/240'));
 							$photolist[] = $photo;
 						}

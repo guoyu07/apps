@@ -120,7 +120,7 @@ class MRest_item
 					switch($after_style['style'])
 					{
 						default:
-							$data['after'] = \Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$data['key'],
+							$data['after'] = \Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$data['key'],
 								array('data_decorate' => $after_style['decorate']));
 							break;
 					}

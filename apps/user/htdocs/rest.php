@@ -2,5 +2,5 @@
 
 namespace APPS\user;
 
-$api = new \Ko_Apps_Rest();
+$api = new \Ko_App_Rest();
 $api->run(__NAMESPACE__);

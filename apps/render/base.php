@@ -8,7 +8,7 @@ class Mbase extends \Ko_View_Render_Smarty
 	{
 		parent::__construct($oSmarty);
 
-		$uid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 		$logininfo = $uid ? \Ko_Tool_Adapter::VConv($uid, array('user_baseinfo', array('logo32'))) : array();
 
 		$this->oSetData('IMG_DOMAIN', IMG_DOMAIN)

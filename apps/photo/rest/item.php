@@ -59,7 +59,7 @@ class MRest_item
 				return array('list' => $list);
 			default:
 				$num = $page['num'];
-				$loginuid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+				$loginuid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 
 				$albuminfo = $photoApi->getAlbumInfo($filter['uid'], $filter['albumid']);
 				if (empty($albuminfo) || ($albuminfo['isrecycle'] && $filter['uid'] != $loginuid)) {
@@ -82,7 +82,7 @@ class MRest_item
 	public function post($update, $after = null, $post_style = 'default')
 	{
 		$file = \Ko_Web_Request::AFile('file');
-		$data = \Ko_Apps_Rest::VInvoke('storage', 'POST', 'item/', array(
+		$data = \Ko_App_Rest::VInvoke('storage', 'POST', 'item/', array(
 			'post_style' => 'upload',
 			'update' => array(
 				'file' => $file,
@@ -95,7 +95,7 @@ class MRest_item
 		$image = $data['key'];
 		$title = $file['name'];
 
-		$uid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 
 		$photoApi = new MApi;
 		switch ($post_style)
@@ -114,7 +114,7 @@ class MRest_item
 			switch ($after['style']) {
 				default:
 					$data['after'] = $photoApi->getPhotoInfo($uid, $photoid);
-					$data['after']['image'] = \Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$image, array('data_decorate' => $after['decorate']));
+					$data['after']['image'] = \Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$image, array('data_decorate' => $after['decorate']));
 					break;
 			}
 		}
@@ -123,7 +123,7 @@ class MRest_item
 
 	public function put($id, $update, $before = null, $after = null, $put_style = 'default')
 	{
-		$uid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 		if ($uid != $id['uid']) {
 			throw new \Exception('修改照片失败', 1);
 		}
@@ -144,7 +144,7 @@ class MRest_item
 
 	public function delete($id, $before = null)
 	{
-		$uid = \Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 		if ($uid != $id['uid']) {
 			throw new \Exception('删除照片失败', 1);
 		}
@@ -162,7 +162,7 @@ class MRest_item
 			$photoApi = new MApi;
 			$content = compact('uid', 'albumid', 'photoid');
 			$content['photolist'] = $photoApi->getPhotoList($uid, $albumid, 0, 9, $total);
-			\Ko_Apps_Rest::VInvoke('sysmsg', 'POST', 'item/', array(
+			\Ko_App_Rest::VInvoke('sysmsg', 'POST', 'item/', array(
 				'update' => array(
 					'uid' => 0,
 					'msgtype' => \KSysmsg_Const::PHOTO,

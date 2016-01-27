@@ -18,7 +18,7 @@ class MbaseinfoApi extends \Ko_Mode_Item
 				'uid' => $uid,
 			);
 			$this->aInsert($data, $data);
-			\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::USER_NICKNAME.'_'.$uid, array(
+			\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::USER_NICKNAME.'_'.$uid, array(
 				'update' => $nickname,
 			));
 		}
@@ -45,7 +45,7 @@ class MbaseinfoApi extends \Ko_Mode_Item
 			);
 			if (strlen($userinfo['logo']))
 			{
-				$sdata = \Ko_Apps_Rest::VInvoke('storage', 'POST', 'item/', array(
+				$sdata = \Ko_App_Rest::VInvoke('storage', 'POST', 'item/', array(
 					'post_style' => 'weburl',
 					'update' => array(
 						'url' => $userinfo['logo'],
@@ -57,7 +57,7 @@ class MbaseinfoApi extends \Ko_Mode_Item
 				}
 			}
 			$this->aInsert($data, $data);
-			\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::USER_NICKNAME.'_'.$uid, array(
+			\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::USER_NICKNAME.'_'.$uid, array(
 				'update' => $userinfo['nickname'],
 			));
 		}

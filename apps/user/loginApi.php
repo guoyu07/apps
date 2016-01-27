@@ -48,13 +48,13 @@ class MloginApi extends \Ko_Mode_User
 
 	public function iOauth2Login($sSrc)
 	{
-		$data = \Ko_Apps_Rest::VInvoke('user\\oauth2', 'GET', 'login/'.$sSrc, null, $errno);
+		$data = \Ko_App_Rest::VInvoke('user\\oauth2', 'GET', 'login/'.$sSrc, null, $errno);
 		if ($errno) {
 			return 0;
 		}
 		$uid = $this->_iGetExternalUid($data['username'], $sSrc);
 		if ($uid) {
-			\Ko_Apps_Rest::VInvoke('user\\oauth2', 'POST', 'token/', array(
+			\Ko_App_Rest::VInvoke('user\\oauth2', 'POST', 'token/', array(
 				'src' => $sSrc,
 				'uid' => $uid,
 				'tokeninfo' => $data['tokeninfo'],

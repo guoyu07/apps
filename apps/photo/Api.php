@@ -13,7 +13,7 @@ class MApi extends \Ko_Busi_Api
 	{
 		$albumids = \Ko_Tool_Utils::AObjs2ids($list, 'albumid');
 		$infos = $this->albumDao->aGetDetails($list);
-		$aText = \Ko_Apps_Rest::VInvoke('content', 'GET', 'items/', array(
+		$aText = \Ko_App_Rest::VInvoke('content', 'GET', 'items/', array(
 			'filter' => array(
 				\KContent_Const::PHOTO_ALBUM_TITLE => $albumids,
 				\KContent_Const::PHOTO_ALBUM_DESC => $albumids,
@@ -33,7 +33,7 @@ class MApi extends \Ko_Busi_Api
 		$photokey = compact('uid', 'photoid');
 		$info = $this->photoDao->aGet($photokey);
 		if (!empty($info)) {
-			$info['title'] = \Ko_Apps_Rest::VInvoke('content', 'GET', 'item/'.\KContent_Const::PHOTO_TITLE.'_'.$photoid);
+			$info['title'] = \Ko_App_Rest::VInvoke('content', 'GET', 'item/'.\KContent_Const::PHOTO_TITLE.'_'.$photoid);
 		}
 		return $info;
 	}
@@ -75,7 +75,7 @@ class MApi extends \Ko_Busi_Api
 		$albumkey = compact('uid', 'albumid');
 		$info = $this->albumDao->aGet($albumkey);
 		if (!empty($info)) {
-			$aText = \Ko_Apps_Rest::VInvoke('content', 'GET', 'items/', array(
+			$aText = \Ko_App_Rest::VInvoke('content', 'GET', 'items/', array(
 				'filter' => array(
 					\KContent_Const::PHOTO_ALBUM_TITLE => array($albumid),
 					\KContent_Const::PHOTO_ALBUM_DESC => array($albumid),
@@ -116,7 +116,7 @@ class MApi extends \Ko_Busi_Api
 			}
 		}
 		$photoids = \Ko_Tool_Utils::AObjs2ids($photolist, 'photoid');
-		$aText = \Ko_Apps_Rest::VInvoke('content', 'GET', 'item/', array(
+		$aText = \Ko_App_Rest::VInvoke('content', 'GET', 'item/', array(
 			'filter' => array(
 				'aid' => \KContent_Const::PHOTO_TITLE,
 				'ids' => $photoids,
@@ -124,7 +124,7 @@ class MApi extends \Ko_Busi_Api
 		));
 		$aText = $aText['list'];
 		$images = \Ko_Tool_Utils::AObjs2ids($photolist, 'image');
-		$sizes = \Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/',
+		$sizes = \Ko_App_Rest::VInvoke('storage', 'GET', 'item/',
 			array('filter' => $images, 'data_style' => 'size_brief', 'data_decorate' => $decorate));
 		foreach ($photolist as $k => &$v) {
 			$v['size'] = $sizes['list'][$v['image']]['size'];
@@ -242,7 +242,7 @@ class MApi extends \Ko_Busi_Api
 		$option->oWhere('uid = ?', $uid)->oOrderBy('sort desc');
 		$albumlist = $this->albumDao->aGetList($option);
 		$albumids = \Ko_Tool_Utils::AObjs2ids($albumlist, 'albumid');
-		$aText = \Ko_Apps_Rest::VInvoke('content', 'GET', 'items/', array(
+		$aText = \Ko_App_Rest::VInvoke('content', 'GET', 'items/', array(
 			'filter' => array(
 				\KContent_Const::PHOTO_ALBUM_TITLE => $albumids,
 				\KContent_Const::PHOTO_ALBUM_DESC => $albumids,
@@ -283,7 +283,7 @@ class MApi extends \Ko_Busi_Api
 		}
 		unset($v);
 		$photoinfos = $this->photoDao->aGetDetails($allphotoids);
-		$aText = \Ko_Apps_Rest::VInvoke('content', 'GET', 'items/', array(
+		$aText = \Ko_App_Rest::VInvoke('content', 'GET', 'items/', array(
 			'filter' => array(
 				\KContent_Const::PHOTO_ALBUM_TITLE => $albumids,
 				\KContent_Const::PHOTO_ALBUM_DESC => $albumids,
@@ -298,7 +298,7 @@ class MApi extends \Ko_Busi_Api
 			$v['digest'] = $digest[$v['albumid']];
 			foreach ($v['digest'] as &$vv) {
 				$vv = $photoinfos[$vv];
-				$vv['image'] = \Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$vv['image'], array('data_decorate' => 'imageView2/1/w/60'));
+				$vv['image'] = \Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$vv['image'], array('data_decorate' => 'imageView2/1/w/60'));
 			}
 			unset($vv);
 		}
@@ -316,7 +316,7 @@ class MApi extends \Ko_Busi_Api
 		if (empty($photo)) {
 			return false;
 		}
-		\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_TITLE.'_'.$photoid, array(
+		\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_TITLE.'_'.$photoid, array(
 			'update' => $title,
 		));
 		return true;
@@ -366,7 +366,7 @@ class MApi extends \Ko_Busi_Api
 		if (empty($album)) {
 			return false;
 		}
-		\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_ALBUM_TITLE.'_'.$albumid, array(
+		\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_ALBUM_TITLE.'_'.$albumid, array(
 			'update' => $title,
 		));
 		return true;
@@ -386,7 +386,7 @@ class MApi extends \Ko_Busi_Api
 		if (empty($album)) {
 			return false;
 		}
-		\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_ALBUM_DESC.'_'.$albumid, array(
+		\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_ALBUM_DESC.'_'.$albumid, array(
 			'update' => $desc,
 		));
 		return true;
@@ -477,7 +477,7 @@ class MApi extends \Ko_Busi_Api
 		$photoid = $this->photoDao->iInsert($data);
 		if ($photoid) {
 			if (strlen($title)) {
-				\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_TITLE.'_'.$photoid, array(
+				\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_TITLE.'_'.$photoid, array(
 					'update' => $title,
 				));
 			}
@@ -540,10 +540,10 @@ class MApi extends \Ko_Busi_Api
 		);
 		$albumid = $this->albumDao->iInsert($data);
 		if ($albumid) {
-			\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_ALBUM_TITLE.'_'.$albumid, array(
+			\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_ALBUM_TITLE.'_'.$albumid, array(
 				'update' => $title,
 			));
-			\Ko_Apps_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_ALBUM_DESC.'_'.$albumid, array(
+			\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_ALBUM_DESC.'_'.$albumid, array(
 				'update' => $desc,
 			));
 		}

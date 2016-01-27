@@ -52,9 +52,9 @@ Ko_Web_Event::On('ko.config', 'after', function () {
 	}
 	$host = Ko_Web_Request::SHttpHost();
 	if (PASSPORT_DOMAIN === $host) {
-		Ko_Apps_Rest::VInvoke('user', 'PUT', 'loginref/');
+		Ko_App_Rest::VInvoke('user', 'PUT', 'loginref/');
 	} else if (WWW_DOMAIN === $host) {
-		$loginuid = Ko_Apps_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$loginuid = Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 		if (empty($loginuid)) {
 			Ko_Web_Response::VSetRedirect('http://'.PASSPORT_DOMAIN.'/user/login');
 			Ko_Web_Response::VSend();
@@ -77,7 +77,7 @@ function image_AAdapter($datalist)
 			$dests_withsize[] = $v[0];
 		}
 	}
-	$sizes = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/',
+	$sizes = Ko_App_Rest::VInvoke('storage', 'GET', 'item/',
 		array('filter' => $dests_withsize, 'data_style' => 'size_brief'));
 	$sizes = $sizes['list'];
 	foreach ($datalist as $k => $v) {
@@ -87,10 +87,10 @@ function image_AAdapter($datalist)
 				$newdatalist[$k]['size'] = $sizes[$v[0]];
 			}
 			if (isset($v[1]['brief'])) {
-				$newdatalist[$k]['brief'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$v[0], array('data_decorate' => $v[1]['brief']));
+				$newdatalist[$k]['brief'] = Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$v[0], array('data_decorate' => $v[1]['brief']));
 			} else if (isset($v[1]['briefCallback'])) {
 				$brief = call_user_func($v[1]['briefCallback'], $newdatalist[$k]);
-				$newdatalist[$k]['brief'] = Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$v[0], array('data_decorate' => $brief));
+				$newdatalist[$k]['brief'] = Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$v[0], array('data_decorate' => $brief));
 			}
 		}
 	}
@@ -105,11 +105,11 @@ function user_AAdapter($datalist)
 	{
 		$uids[] = $v[0];
 	}
-	$infos = Ko_Apps_Rest::VInvoke('user', 'GET', 'item/', array(
+	$infos = Ko_App_Rest::VInvoke('user', 'GET', 'item/', array(
 		'filter' => $uids,
 	));
 	$infos = $infos['list'];
-	$nicknames = Ko_Apps_Rest::VInvoke('content', 'GET', 'item/', array(
+	$nicknames = Ko_App_Rest::VInvoke('content', 'GET', 'item/', array(
 		'filter' => array(
 			'aid' => KContent_Const::USER_NICKNAME,
 			'ids' => $uids,
@@ -137,32 +137,32 @@ function user_VFillMoreInfo(&$info, $aMore)
 			case 'logo16':
 				$info['logo16'] = ('' === $info['logo'])
 					? 'http://'.IMG_DOMAIN.'/logo/16.png'
-					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/16'));
+					: Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/16'));
 				break;
 			case 'logo32':
 				$info['logo32'] = ('' === $info['logo'])
 					? 'http://'.IMG_DOMAIN.'/logo/32.png'
-					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/32'));
+					: Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/32'));
 				break;
 			case 'logo48':
 				$info['logo48'] = ('' === $info['logo'])
 					? 'http://'.IMG_DOMAIN.'/logo/48.png'
-					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/48'));
+					: Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/48'));
 				break;
 			case 'logo80':
 				$info['logo80'] = ('' === $info['logo'])
 					? 'http://'.IMG_DOMAIN.'/logo/80.png'
-					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/80'));
+					: Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/80'));
 				break;
 			case 'logo120':
 				$info['logo120'] = ('' === $info['logo'])
 					? 'http://'.IMG_DOMAIN.'/logo/120.png'
-					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/120'));
+					: Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/120'));
 				break;
 			case 'logo200':
 				$info['logo200'] = ('' === $info['logo'])
 					? 'http://'.IMG_DOMAIN.'/logo/200.png'
-					: Ko_Apps_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/200'));
+					: Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$info['logo'], array('data_decorate' => 'imageView2/1/w/200'));
 				break;
 		}
 	}
