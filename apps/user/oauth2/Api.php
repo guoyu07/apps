@@ -34,7 +34,16 @@ class MApi extends \Ko_Mode_OAuth2Client
 				),
 			),
 		);
-	
+
+	public static function oauth2login($src)
+	{
+		$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'oauth2/'.$src);
+		\Ko_App_Rest::VInvoke('user', 'PUT', 'loginuid/', array('update' => $uid));
+		$loginref = \Ko_App_Rest::VInvoke('user', 'GET', 'loginref/');
+		\Ko_Web_Response::VSetRedirect($loginref);
+		\Ko_Web_Response::VSend();
+	}
+
 	public function __construct()
 	{
 		foreach ($this->_aConf['srclist'] as $k => &$v)

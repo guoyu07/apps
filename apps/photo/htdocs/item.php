@@ -2,59 +2,7 @@
 
 namespace APPS\photo;
 
-\Ko_Web_Route::VGet('user', function() {
-	$uid = \Ko_Web_Request::IGet('uid');
-
-	$photoApi = new MApi();
-	$albumlist = $photoApi->getAllAlbumDigest($uid);
-	$userinfo = \Ko_Tool_Adapter::VConv($uid, array('user_baseinfo', array('logo80')));
-
-	$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/');
-	$render = $render['key'];
-	$render->oSetTemplate('user.html')
-		->oSetData('userinfo', $userinfo)
-		->oSetData('albumlist', $albumlist)
-		->oSend();
-});
-
-\Ko_Web_Route::VGet('album', function () {
-	static $num = 20;
-
-	$loginuid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
-
-	$uid = \Ko_Web_Request::IGet('uid');
-	$albumid = \Ko_Web_Request::IGet('albumid');
-
-	$photoApi = new MApi();
-	$albuminfo = $photoApi->getAlbumInfo($uid, $albumid);
-	if (empty($albuminfo) || ($albuminfo['isrecycle'] && $uid != $loginuid)) {
-		\Ko_Web_Response::VSetRedirect('/');
-		\Ko_Web_Response::VSend();
-		exit;
-	}
-
-	$userinfo = \Ko_Tool_Adapter::VConv($uid, array('user_baseinfo', array('logo80')));
-	$photolist = $photoApi->getPhotoListBySeq($uid, $albumid, '0_0_0', $num, $next, $next_boundary, 'imageView2/2/w/240');
-
-	$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/');
-	$render = $render['key'];
-	if ($loginuid == $uid) {
-		$allalbumlist = $photoApi->getAllAlbumList($uid);
-		$render->oSetData('allalbumlist', $allalbumlist);
-	}
-	$render->oSetTemplate('album.html')
-		->oSetData('userinfo', $userinfo)
-		->oSetData('albuminfo', $albuminfo)
-		->oSetData('photolist', $photolist)
-		->oSetData('page', array(
-			'num' => $num,
-			'next' => $next,
-			'next_boundary' => $next_boundary,
-		))
-		->oSend();
-});
-
-\Ko_Web_Route::VGet('item', function () {
+\Ko_Web_Route::VGet('index', function () {
 	$loginuid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
 
 	$uid = \Ko_Web_Request::IGet('uid');
