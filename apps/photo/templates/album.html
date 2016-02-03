@@ -4,6 +4,8 @@
      data-isrecycle="{$albuminfo.isrecycle}">
 </div>
 
+<div id="tokendata" class="hide" data-token="{$token}"></div>
+
 <div class="main">
     <div class="title left" style="padding-right: 36px;">
         <a href="user?uid={$userinfo.uid}"><img src="{$userinfo.logo80}" style="border-radius: 40px;vertical-align: middle;"></a>
@@ -390,15 +392,18 @@
 	        var pos = 0;
 	        var lasttime = 0;
 	        var lastloaded = 0;
+            var token = $('#tokendata').data('token');
             var uploaderConfig = {
                 browse_button: 'btnAddPhoto',
-                url: '/photo/rest/item/',
+//                url: '/photo/rest/item/',
+                url: 'http://upload.qiniu.com/',
                 multi_selection: true,
                 multipart_params: {
-                    'post_style': 'album',
-                    'update': albumid,
-                    'after_style': 'default',
-                    'after_decorate': 'imageView2/2/w/150/h/150'
+//                    'post_style': 'album',
+//                    'update': albumid,
+//                    'after_style': 'default',
+//                    'after_decorate': 'imageView2/2/w/150/h/150'
+                    'token': token,
                 },
                 filters: {
                     mime_types: [{'title': '图片文件', 'extensions': 'jpg,gif,png,jpeg'}],

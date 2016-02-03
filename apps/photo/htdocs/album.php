@@ -21,6 +21,10 @@ namespace APPS\photo;
 	$userinfo = \Ko_Tool_Adapter::VConv($uid, array('user_baseinfo', array('logo80')));
 	$photolist = $photoApi->getPhotoListBySeq($uid, $albumid, '0_0_0', $num, $next, $next_boundary, 'imageView2/2/w/240');
 
+	$token = \Ko_App_Rest::VInvoke('storage', 'POST', 'token/',
+		array('update' => array('uid' => $loginuid, 'albumid' => $albumid)));
+	$token = $token['key'];
+
 	$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/');
 	$render = $render['key'];
 	if ($loginuid == $uid) {
@@ -36,5 +40,6 @@ namespace APPS\photo;
 			'next' => $next,
 			'next_boundary' => $next_boundary,
 		))
+		->oSetData('token', $token)
 		->oSend();
 });
