@@ -29,7 +29,7 @@ define('KO_XHPROF_LIBDIR', CODE_ROOT . 'xhprof/xhprof_lib/');
 define('KO_XHPROF_WEBBASE', 'http://' . XHPROF_DOMAIN . '/xhprof_html/');
 define('KO_XHPROF_TMPDIR', COMMON_RUNDATA_PATH . 'xhprof/');
 
-define('KO_CONFIG_SITE_INI', COMMON_CONF_PATH . 'all.ini');
+define('KO_CONFIG_SITE_INI', COMMON_CONF_PATH . 'site.ini');
 
 require_once(CODE_ROOT . 'ko/ko.class.php');
 
