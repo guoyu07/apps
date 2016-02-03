@@ -64,35 +64,59 @@
                 </div>
                 <div class="clear"></div>
             </div>
+            {if is_array($photoinfo.image_exif.DateTime) && isset($photoinfo.image_exif.DateTime['val'])}
+            {$photoinfo.image_exif.DateTime = $photoinfo.image_exif.DateTime['val']}
+            {/if}
             {if strlen($photoinfo.image_exif.DateTime)}
             <div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
                 {$photoinfo.image_exif.DateTime[4] = '-'}
                 {$photoinfo.image_exif.DateTime[7] = '-'}
                 拍摄于：{$photoinfo.image_exif.DateTime|substr:0:16}
+                {if is_array($photoinfo.image_exif.Make) && isset($photoinfo.image_exif.Make['val'])}
+                {$photoinfo.image_exif.Make = $photoinfo.image_exif.Make['val']}
+                {/if}
+                {if is_array($photoinfo.image_exif.Model) && isset($photoinfo.image_exif.Model['val'])}
+                {$photoinfo.image_exif.Model = $photoinfo.image_exif.Model['val']}
+                {/if}
                 {if strlen($photoinfo.image_exif.Make)}
                     / {$photoinfo.image_exif.Make} {$photoinfo.image_exif.Model}
                 {/if}
             </div>
+            {/if}
+            {if is_array($photoinfo.image_exif.FocalLength) && isset($photoinfo.image_exif.FocalLength['val'])}
+            {$photoinfo.image_exif.FocalLength = $photoinfo.image_exif.FocalLength['val']}
             {/if}
             {if strlen($photoinfo.image_exif.FocalLength)}
             <div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
                 焦距： {$photoinfo.image_exif.FocalLength}
             </div>
             {/if}
+            {if is_array($photoinfo.image_exif.FNumber) && isset($photoinfo.image_exif.FNumber['val'])}
+            {$photoinfo.image_exif.FNumber = $photoinfo.image_exif.FNumber['val']}
+            {/if}
             {if strlen($photoinfo.image_exif.FNumber)}
             <div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
                 光圈： {$photoinfo.image_exif.FNumber}
             </div>
+            {/if}
+            {if is_array($photoinfo.image_exif.ExposureTime) && isset($photoinfo.image_exif.ExposureTime['val'])}
+            {$photoinfo.image_exif.ExposureTime = $photoinfo.image_exif.ExposureTime['val']}
             {/if}
             {if strlen($photoinfo.image_exif.ExposureTime)}
             <div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
                 快门： {$photoinfo.image_exif.ExposureTime}
             </div>
             {/if}
+            {if is_array($photoinfo.image_exif.ISOSpeedRatings) && isset($photoinfo.image_exif.ISOSpeedRatings['val'])}
+            {$photoinfo.image_exif.ISOSpeedRatings = $photoinfo.image_exif.ISOSpeedRatings['val']}
+            {/if}
             {if strlen($photoinfo.image_exif.ISOSpeedRatings)}
             <div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
                 感光度： {$photoinfo.image_exif.ISOSpeedRatings}
             </div>
+            {/if}
+            {if is_array($photoinfo.image_exif.Flash) && isset($photoinfo.image_exif.Flash['val'])}
+            {$photoinfo.image_exif.Flash = $photoinfo.image_exif.Flash['val']}
             {/if}
             {if strlen($photoinfo.image_exif.Flash)}
             <div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
@@ -102,12 +126,38 @@
 	        {if (is_array($photoinfo.image_exif.GPSLatitude) || strlen($photoinfo.image_exif.GPSLatitude))
 	            && (is_array($photoinfo.image_exif.GPSLongitude) || strlen($photoinfo.image_exif.GPSLongitude))}
 	        <div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
-		        坐标： {$photoinfo.image_exif.GPSLatitudeRef} {if is_array($photoinfo.image_exif.GPSLatitude)}{implode(', ', $photoinfo.image_exif.GPSLatitude)}{else}{$photoinfo.image_exif.GPSLatitude}{/if}
-		        , {$photoinfo.image_exif.GPSLongitudeRef} {if is_array($photoinfo.image_exif.GPSLongitude)}{implode(', ', $photoinfo.image_exif.GPSLongitude)}{else}{$photoinfo.image_exif.GPSLongitude}{/if}
+                {if is_array($photoinfo.image_exif.GPSLatitudeRef) && isset($photoinfo.image_exif.GPSLatitudeRef['val'])}
+                {$photoinfo.image_exif.GPSLatitudeRef = $photoinfo.image_exif.GPSLatitudeRef['val']}
+                {/if}
+                {if is_array($photoinfo.image_exif.GPSLongitudeRef) && isset($photoinfo.image_exif.GPSLongitudeRef['val'])}
+                {$photoinfo.image_exif.GPSLongitudeRef = $photoinfo.image_exif.GPSLongitudeRef['val']}
+                {/if}
+                {if is_array($photoinfo.image_exif.GPSLatitude)}
+                {if isset($photoinfo.image_exif.GPSLatitude['val'])}
+                {$photoinfo.image_exif.GPSLatitude = $photoinfo.image_exif.GPSLatitude['val']}
+                {else}
+                {$photoinfo.image_exif.GPSLatitude = implode(', ', $photoinfo.image_exif.GPSLatitude)}
+                {/if}
+                {/if}
+                {if is_array($photoinfo.image_exif.GPSLongitude)}
+                {if isset($photoinfo.image_exif.GPSLongitude['val'])}
+                {$photoinfo.image_exif.GPSLongitude = $photoinfo.image_exif.GPSLongitude['val']}
+                {else}
+                {$photoinfo.image_exif.GPSLongitude = implode(', ', $photoinfo.image_exif.GPSLongitude)}
+                {/if}
+                {/if}
+		        坐标： {$photoinfo.image_exif.GPSLatitudeRef} {$photoinfo.image_exif.GPSLatitude},
+                {$photoinfo.image_exif.GPSLongitudeRef} {$photoinfo.image_exif.GPSLongitude}
 	        </div>
 	        {/if}
+            {if is_array($photoinfo.image_exif.GPSAltitude) && isset($photoinfo.image_exif.GPSAltitude['val'])}
+            {$photoinfo.image_exif.GPSAltitude = $photoinfo.image_exif.GPSAltitude['val']}
+            {/if}
 	        {if strlen($photoinfo.image_exif.GPSAltitude)}
 	        <div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
+                {if is_array($photoinfo.image_exif.GPSAltitudeRef) && isset($photoinfo.image_exif.GPSAltitudeRef['val'])}
+                {$photoinfo.image_exif.GPSAltitudeRef = $photoinfo.image_exif.GPSAltitudeRef['val'] !== 'Sea level'}
+                {/if}
 		        海拔： {if $photoinfo.image_exif.GPSAltitudeRef}-{$photoinfo.image_exif.GPSAltitude}{else}{$photoinfo.image_exif.GPSAltitude}{/if}
 	        </div>
 	        {/if}

@@ -35,7 +35,18 @@ class MRest_item
 		),
 		'poststylelist' => array(
 			'default' => 'any',
-			'album' => 'string',
+			'album' => 'int',
+			'async' => array('hash', array(
+				'uid' => 'int',
+				'albumid' => 'int',
+				'key' => 'string',
+				'width' => 'int',
+				'height' => 'int',
+				'orientation' => 'string',
+				'mime' => 'string',
+				'name' => 'string',
+				'fsize' => 'int',
+			)),
 		),
 		'putstylelist' => array(
 			'title' => 'string',
@@ -81,31 +92,41 @@ class MRest_item
 
 	public function post($update, $after = null, $post_style = 'default')
 	{
-		$file = \Ko_Web_Request::AFile('file');
-		$data = \Ko_App_Rest::VInvoke('storage', 'POST', 'item/', array(
-			'post_style' => 'upload',
-			'update' => array(
-				'file' => $file,
-			),
-		), $error);
-		if ($error)
-		{
-			throw new \Exception('文件上传失败', 1);
-		}
-		$image = $data['key'];
-		$title = $file['name'];
-
-		$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
-
 		$photoApi = new MApi;
-		switch ($post_style)
+		if ('async' === $post_style)
 		{
-			case 'album':
-				$albumid = $update;
-				break;
-			default:
-				$albumid = 0;
-				break;
+			$uid = $update['uid'];
+			$albumid = $update['albumid'];
+			$image = $update['key'];
+			$title = $update['name'];
+		}
+		else
+		{
+			$file = \Ko_Web_Request::AFile('file');
+			$data = \Ko_App_Rest::VInvoke('storage', 'POST', 'item/', array(
+				'post_style' => 'upload',
+				'update' => array(
+					'file' => $file,
+				),
+			), $error);
+			if ($error)
+			{
+				throw new \Exception('文件上传失败', 1);
+			}
+			$image = $data['key'];
+			$title = $file['name'];
+
+			$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
+
+			switch ($post_style)
+			{
+				case 'album':
+					$albumid = $update;
+					break;
+				default:
+					$albumid = 0;
+					break;
+			}
 		}
 		$photoid = $photoApi->addPhoto($albumid, $uid, $image, $title);
 		$this->_sendSysmsg($uid, $albumid, $photoid);
