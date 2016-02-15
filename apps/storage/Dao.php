@@ -30,5 +30,10 @@ class MDao extends \Ko_Dao_Factory
 			'kind' => 'image_exif',
 			'key' => 'dest',
 		),
+		'avinfo' => array(
+			'type' => 'db_single',
+			'kind' => 'video_avinfo',
+			'key' => 'dest',
+		),
 	);
 }

@@ -4,12 +4,12 @@ namespace APPS\user;
 
 \Ko_Web_Route::VGet('index', function()
 {
-	$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
+	$uid = MFacade_Api::getLoginUid();
 	if ($uid)
 	{
-		$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/', array('post_style' => 'passport'));
-		$render = $render['key'];
-		$render->oSetTemplate('logo.html')->oSend();
+		$token = \APPS\storage\MFacade_Api::getUploadImageToken(array('type' => 'logo', 'decorate' => 'imageView2/3/w/400/h/400'));
+		$render = new \APPS\render\MFacade_passport();
+		$render->oSetTemplate('logo.html')->oSetData('token', $token)->oSend();
 	}
 	else
 	{

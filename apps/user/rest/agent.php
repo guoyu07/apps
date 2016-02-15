@@ -23,13 +23,8 @@ class MRest_agent
 		),
 	);
 
-	public function get($id, $style = null)
-	{
-		return MagentApi::get();
-	}
-
 	public function put($id, $update, $before = null, $after = null, $put_style)
 	{
-		MagentApi::set($update);
+		MFacade_agentApi::set($update);
 	}
 }

@@ -18,23 +18,18 @@ class MRest_draft
 
 	public function put($id, $update, $before = null, $after = null, $put_style = 'default')
 	{
-		$loginuid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$loginuid = \APPS\user\MFacade_Api::getLoginUid();
 
+		$contentApi = new \APPS\content\MFacade_Api();
 		if ($loginuid) {
 			switch ($put_style)
 			{
 				case 'default':
-					\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::DRAFT_CONTENT.'_'.$loginuid, array(
-						'update' => $update['content'],
-					));
-					\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::DRAFT_TITLE.'_'.$loginuid, array(
-						'update' => $update['title'],
-					));
+					$contentApi->bSet(\APPS\content\MFacade_Const::DRAFT_CONTENT, $loginuid, $update['content']);
+					$contentApi->bSet(\APPS\content\MFacade_Const::DRAFT_TITLE, $loginuid, $update['title']);
 					break;
 				case 'title':
-					\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::DRAFT_TITLE.'_'.$loginuid, array(
-						'update' => $update['title'],
-					));
+					$contentApi->bSet(\APPS\content\MFacade_Const::DRAFT_TITLE, $loginuid, $update['title']);
 					break;
 			}
 		}

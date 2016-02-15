@@ -20,12 +20,6 @@ class MRest_item
 				'content' => 'string',
 			)),
 		),
-		'filterstylelist' => array(
-			'default' => array('list', array('hash', array(
-				'uid' => 'int',
-				'blogid' => 'int',
-			))),
-		),
 		'poststylelist' => array(
 			'default' => array('hash', array(
 				'title' => 'string',
@@ -49,16 +43,9 @@ class MRest_item
 		return compact('uid', 'blogid');
 	}
 
-	public function getMulti($style, $page, $filter, $ex_style = null, $filter_style = 'default')
-	{
-		$api = new MApi();
-		$list = $api->aGetBlogInfos($filter);
-		return array('list' => $list);
-	}
-
 	public function post($update, $after = null, $post_style = 'default')
 	{
-		$loginuid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$loginuid = \APPS\user\MFacade_Api::getLoginUid();
 
 		if (0 == strlen($update['title'])) {
 			throw new \Exception('请输入博客标题', 1);
@@ -70,12 +57,9 @@ class MRest_item
 			throw new \Exception('添加博客失败', 2);
 		}
 
-		\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::DRAFT_CONTENT.'_'.$loginuid, array(
-			'update' => '',
-		));
-		\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::DRAFT_TITLE.'_'.$loginuid, array(
-			'update' => '',
-		));
+		$contentApi = new \APPS\content\MFacade_Api();
+		$contentApi->bSet(\APPS\content\MFacade_Const::DRAFT_CONTENT, $loginuid, '');
+		$contentApi->bSet(\APPS\content\MFacade_Const::DRAFT_TITLE, $loginuid, '');
 
 		$this->_sendSysmsg($loginuid, $blogid);
 
@@ -84,7 +68,7 @@ class MRest_item
 
 	public function put($id, $update, $before = null, $after = null, $put_style = 'default')
 	{
-		$loginuid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$loginuid = \APPS\user\MFacade_Api::getLoginUid();
 		if ($loginuid != $id['uid']) {
 			throw new \Exception('修改博客失败', 1);
 		}
@@ -104,7 +88,7 @@ class MRest_item
 
 	public function delete($id, $before = null)
 	{
-		$loginuid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$loginuid = \APPS\user\MFacade_Api::getLoginUid();
 		if ($loginuid != $id['uid']) {
 			throw new \Exception('删除博客失败', 1);
 		}
@@ -118,14 +102,7 @@ class MRest_item
 	{
 		if (18 <= $uid && $uid <= 21) {
 			$content = compact('uid', 'blogid');
-			\Ko_App_Rest::VInvoke('sysmsg', 'POST', 'item/', array(
-				'update' => array(
-					'uid' => 0,
-					'msgtype' => \KSysmsg_Const::BLOG,
-					'content' => $content,
-					'mergeid' => $blogid,
-				),
-			));
+			\APPS\sysmsg\MFacade_Api::send(0, \APPS\sysmsg\MFacade_Const::BLOG, $content, $blogid);
 		}
 	}
 }

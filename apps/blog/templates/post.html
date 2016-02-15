@@ -3,6 +3,8 @@
 	 data-blogid="{$bloginfo.blogid}">
 </div>
 
+<div id="tokendata" class="hide" data-token="{$token}"></div>
+
 <div class="main">
 	<div class="title left" style="padding-right: 36px;">
 		<a href="user?uid={$userinfo.uid}"><img src="{$userinfo.logo80}" style="border-radius: 40px;vertical-align: middle;"></a>
@@ -136,10 +138,16 @@
 		}
 		function initplupload(editor) {
 			var imgsize = 600;
+			var token = $('#tokendata').data('token');
 			var uploader = new plupload.Uploader({
 				browse_button: 'mceu_imageko',
-				url: '/storage/rest/item/',
-				multipart_params: {after_style: 'default', after_decorate: 'imageView2/2/w/' + imgsize + '/h/' + imgsize},
+//				url: '/storage/rest/item/',
+				url: 'http://upload.qiniu.com/',
+				multipart_params: {
+//                    after_style: 'default',
+//                    after_decorate: 'imageView2/2/w/' + imgsize + '/h/' + imgsize
+					'token': token
+				},
 				filters: {
 					mime_types: [{title: '图片文件', extensions: 'jpg,gif,png'}],
 					max_file_size: '50mb'

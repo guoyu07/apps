@@ -6,14 +6,27 @@ $api = new MApi();
 if ($api->bCheckCallback('/storage/'))
 {
 	$data = \Ko_Web_Request::APost();
-	if (!$api->bAsync2Storage($data['key'], $data))
+	if (!$api->bAsyncImage2Storage($data['key'], $data))
 	{
 		$data = array('errno' => 2, 'error' => '保存信息失败');
 	}
-	$data = \Ko_App_Rest::VInvoke('photo', 'POST', 'item/',
-		array('post_style' => 'async', 'update' => $data,
-			'after_style' => 'default', 'after_decorate' => 'imageView2/2/w/150/h/150'));
-	$data = array('errno' => 0, 'error' => '', 'data' => $data);
+	else
+	{
+		switch ($data['type'])
+		{
+			case 'blog':
+			case 'logo':
+				$data = array(
+					'key' => $data['key'],
+					'after' => MFacade_Api::getUrl($data['key'], $data['decorate']),
+				);
+				break;
+			case 'photo':
+				$data = \APPS\photo\MFacade_Api::addPhoto($data['albumid'], $data['uid'], $data['key'], $data['name'], $data['decorate']);
+				break;
+		}
+		$data = array('errno' => 0, 'error' => '', 'data' => $data);
+	}
 }
 else
 {

@@ -19,6 +19,6 @@ class MHtdocs_index
 	<link href="http://img.zhangchu.cc/css/reset.css" rel="stylesheet">
 </head>
 <body>
-test
+welcome! it's a test!
 </body>
 </html>

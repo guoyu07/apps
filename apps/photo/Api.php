@@ -13,16 +13,14 @@ class MApi extends \Ko_Busi_Api
 	{
 		$albumids = \Ko_Tool_Utils::AObjs2ids($list, 'albumid');
 		$infos = $this->albumDao->aGetDetails($list);
-		$aText = \Ko_App_Rest::VInvoke('content', 'GET', 'items/', array(
-			'filter' => array(
-				\KContent_Const::PHOTO_ALBUM_TITLE => $albumids,
-				\KContent_Const::PHOTO_ALBUM_DESC => $albumids,
-			),
+		$contentApi = new \APPS\content\MFacade_Api();
+		$aText = $contentApi->aGetTextEx(array(
+			\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE => $albumids,
+			\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC => $albumids,
 		));
-		$aText = $aText['list'];
 		foreach ($infos as &$v) {
-			$v['title'] = $aText[\KContent_Const::PHOTO_ALBUM_TITLE][$v['albumid']];
-			$v['desc'] = $aText[\KContent_Const::PHOTO_ALBUM_DESC][$v['albumid']];
+			$v['title'] = $aText[\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE][$v['albumid']];
+			$v['desc'] = $aText[\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC][$v['albumid']];
 		}
 		unset($v);
 		return $infos;
@@ -33,7 +31,8 @@ class MApi extends \Ko_Busi_Api
 		$photokey = compact('uid', 'photoid');
 		$info = $this->photoDao->aGet($photokey);
 		if (!empty($info)) {
-			$info['title'] = \Ko_App_Rest::VInvoke('content', 'GET', 'item/'.\KContent_Const::PHOTO_TITLE.'_'.$photoid);
+			$contentApi = new \APPS\content\MFacade_Api();
+			$info['title'] = $contentApi->sGetText(\APPS\content\MFacade_Const::PHOTO_TITLE, $photoid);
 		}
 		return $info;
 	}
@@ -75,15 +74,13 @@ class MApi extends \Ko_Busi_Api
 		$albumkey = compact('uid', 'albumid');
 		$info = $this->albumDao->aGet($albumkey);
 		if (!empty($info)) {
-			$aText = \Ko_App_Rest::VInvoke('content', 'GET', 'items/', array(
-				'filter' => array(
-					\KContent_Const::PHOTO_ALBUM_TITLE => array($albumid),
-					\KContent_Const::PHOTO_ALBUM_DESC => array($albumid),
-				),
+			$contentApi = new \APPS\content\MFacade_Api();
+			$aText = $contentApi->aGetTextEx(array(
+				\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE => array($albumid),
+				\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC => array($albumid),
 			));
-			$aText = $aText['list'];
-			$info['title'] = $aText[\KContent_Const::PHOTO_ALBUM_TITLE][$albumid];
-			$info['desc'] = $aText[\KContent_Const::PHOTO_ALBUM_DESC][$albumid];
+			$info['title'] = $aText[\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE][$albumid];
+			$info['desc'] = $aText[\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC][$albumid];
 			$info['isrecycle'] = $info['albumid'] == $this->_getRecycleAlbumid($uid);
 		}
 		return $info;
@@ -116,19 +113,13 @@ class MApi extends \Ko_Busi_Api
 			}
 		}
 		$photoids = \Ko_Tool_Utils::AObjs2ids($photolist, 'photoid');
-		$aText = \Ko_App_Rest::VInvoke('content', 'GET', 'item/', array(
-			'filter' => array(
-				'aid' => \KContent_Const::PHOTO_TITLE,
-				'ids' => $photoids,
-			),
-		));
-		$aText = $aText['list'];
+		$contentApi = new \APPS\content\MFacade_Api();
+		$aText = $contentApi->aGetText(\APPS\content\MFacade_Const::PHOTO_TITLE, $photoids);
 		$images = \Ko_Tool_Utils::AObjs2ids($photolist, 'image');
-		$sizes = \Ko_App_Rest::VInvoke('storage', 'GET', 'item/',
-			array('filter' => $images, 'data_style' => 'size_brief', 'data_decorate' => $decorate));
+		$sizes = \APPS\storage\MFacade_Api::getSizeAndBrief($images, $decorate);
 		foreach ($photolist as $k => &$v) {
-			$v['size'] = $sizes['list'][$v['image']]['size'];
-			$v['image'] = $sizes['list'][$v['image']]['brief'];
+			$v['size'] = $sizes[$v['image']]['size'];
+			$v['image'] = $sizes[$v['image']]['brief'];
 			$v['title'] = $aText[$v['photoid']];
 
 			$update = array();
@@ -242,17 +233,15 @@ class MApi extends \Ko_Busi_Api
 		$option->oWhere('uid = ?', $uid)->oOrderBy('sort desc');
 		$albumlist = $this->albumDao->aGetList($option);
 		$albumids = \Ko_Tool_Utils::AObjs2ids($albumlist, 'albumid');
-		$aText = \Ko_App_Rest::VInvoke('content', 'GET', 'items/', array(
-			'filter' => array(
-				\KContent_Const::PHOTO_ALBUM_TITLE => $albumids,
-				\KContent_Const::PHOTO_ALBUM_DESC => $albumids,
-			),
+		$contentApi = new \APPS\content\MFacade_Api();
+		$aText = $contentApi->aGetTextEx(array(
+			\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE => $albumids,
+			\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC => $albumids,
 		));
-		$aText = $aText['list'];
 		$recycleid = $this->_getRecycleAlbumid($uid);
 		foreach ($albumlist as &$v) {
-			$v['title'] = $aText[\KContent_Const::PHOTO_ALBUM_TITLE][$v['albumid']];
-			$v['desc'] = $aText[\KContent_Const::PHOTO_ALBUM_DESC][$v['albumid']];
+			$v['title'] = $aText[\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE][$v['albumid']];
+			$v['desc'] = $aText[\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC][$v['albumid']];
 			$v['isrecycle'] = $v['albumid'] == $recycleid;
 		}
 		unset($v);
@@ -283,22 +272,20 @@ class MApi extends \Ko_Busi_Api
 		}
 		unset($v);
 		$photoinfos = $this->photoDao->aGetDetails($allphotoids);
-		$aText = \Ko_App_Rest::VInvoke('content', 'GET', 'items/', array(
-			'filter' => array(
-				\KContent_Const::PHOTO_ALBUM_TITLE => $albumids,
-				\KContent_Const::PHOTO_ALBUM_DESC => $albumids,
-			),
+		$contentApi = new \APPS\content\MFacade_Api();
+		$aText = $contentApi->aGetTextEx(array(
+			\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE => $albumids,
+			\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC => $albumids,
 		));
-		$aText = $aText['list'];
 		$recycleid = $this->_getRecycleAlbumid($uid);
 		foreach ($albumlist as &$v) {
-			$v['title'] = $aText[\KContent_Const::PHOTO_ALBUM_TITLE][$v['albumid']];
-			$v['desc'] = $aText[\KContent_Const::PHOTO_ALBUM_DESC][$v['albumid']];
+			$v['title'] = $aText[\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE][$v['albumid']];
+			$v['desc'] = $aText[\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC][$v['albumid']];
 			$v['isrecycle'] = $v['albumid'] == $recycleid;
 			$v['digest'] = $digest[$v['albumid']];
 			foreach ($v['digest'] as &$vv) {
 				$vv = $photoinfos[$vv];
-				$vv['image'] = \Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$vv['image'], array('data_decorate' => 'imageView2/1/w/60'));
+				$vv['image'] = \APPS\storage\MFacade_Api::getUrl($vv['image'], 'imageView2/1/w/60');
 			}
 			unset($vv);
 		}
@@ -316,9 +303,8 @@ class MApi extends \Ko_Busi_Api
 		if (empty($photo)) {
 			return false;
 		}
-		\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_TITLE.'_'.$photoid, array(
-			'update' => $title,
-		));
+		$contentApi = new \APPS\content\MFacade_Api();
+		$contentApi->bSet(\APPS\content\MFacade_Const::PHOTO_TITLE, $photoid, $title);
 		return true;
 	}
 
@@ -366,9 +352,8 @@ class MApi extends \Ko_Busi_Api
 		if (empty($album)) {
 			return false;
 		}
-		\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_ALBUM_TITLE.'_'.$albumid, array(
-			'update' => $title,
-		));
+		$contentApi = new \APPS\content\MFacade_Api();
+		$contentApi->bSet(\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE, $albumid, $title);
 		return true;
 	}
 
@@ -386,9 +371,8 @@ class MApi extends \Ko_Busi_Api
 		if (empty($album)) {
 			return false;
 		}
-		\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_ALBUM_DESC.'_'.$albumid, array(
-			'update' => $desc,
-		));
+		$contentApi = new \APPS\content\MFacade_Api();
+		$contentApi->bSet(\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC, $albumid, $desc);
 		return true;
 	}
 
@@ -477,9 +461,8 @@ class MApi extends \Ko_Busi_Api
 		$photoid = $this->photoDao->iInsert($data);
 		if ($photoid) {
 			if (strlen($title)) {
-				\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_TITLE.'_'.$photoid, array(
-					'update' => $title,
-				));
+				$contentApi = new \APPS\content\MFacade_Api();
+				$contentApi->bSet(\APPS\content\MFacade_Const::PHOTO_TITLE, $photoid, $title);
 			}
 
 			$albumkey = compact('uid', 'albumid');
@@ -540,12 +523,9 @@ class MApi extends \Ko_Busi_Api
 		);
 		$albumid = $this->albumDao->iInsert($data);
 		if ($albumid) {
-			\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_ALBUM_TITLE.'_'.$albumid, array(
-				'update' => $title,
-			));
-			\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::PHOTO_ALBUM_DESC.'_'.$albumid, array(
-				'update' => $desc,
-			));
+			$contentApi = new \APPS\content\MFacade_Api();
+			$contentApi->bSet(\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE, $albumid, $title);
+			$contentApi->bSet(\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC, $albumid, $desc);
 		}
 		return $albumid;
 	}

@@ -48,17 +48,13 @@ class MloginApi extends \Ko_Mode_User
 
 	public function iOauth2Login($sSrc)
 	{
-		$data = \Ko_App_Rest::VInvoke('user\\oauth2', 'GET', 'login/'.$sSrc, null, $errno);
-		if ($errno) {
+		$data = \APPS\user\oauth2\MFacade_Api::getTokenInfo($sSrc);
+		if (false === $data) {
 			return 0;
 		}
 		$uid = $this->_iGetExternalUid($data['username'], $sSrc);
 		if ($uid) {
-			\Ko_App_Rest::VInvoke('user\\oauth2', 'POST', 'token/', array(
-				'src' => $sSrc,
-				'uid' => $uid,
-				'tokeninfo' => $data['tokeninfo'],
-			));
+			\APPS\user\oauth2\MFacade_Api::saveUserToken($sSrc, $uid, $data['tokeninfo']);
 			$this->baseinfoApi->bUpdateOauth2info($uid, $data['userinfo']);
 		}
 		return $uid;

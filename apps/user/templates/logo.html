@@ -12,14 +12,22 @@
 	</div>
 </div>
 
+<div id="tokendata" class="hide" data-token="{$token}"></div>
+
 {literal}
 <script language="JavaScript">
     (function(){
         $(document).ready(function() {
+            var token = $('#tokendata').data('token');
             var uploaderConfig = {
-                url: '/storage/rest/item/',
+//                url: '/storage/rest/item/',
+                url: 'http://upload.qiniu.com/',
                 multi_selection: false,
-                multipart_params: {after_style: 'default', after_decorate: 'imageView2/3/w/400/h/400'},
+                multipart_params: {
+//                    after_style: 'default',
+//                    after_decorate: 'imageView2/3/w/400/h/400'
+                    'token': token
+                },
                 filters: {
                     mime_types: [{title: '图片文件', extensions: 'jpg,gif,png'}],
                     max_file_size: '50mb'

@@ -3,17 +3,10 @@
 namespace APPS\home;
 
 $num = 10;
-$msglist = \Ko_App_Rest::VInvoke('sysmsg', 'GET', 'item/', array(
-	'page' => array(
-		'num' => $num,
-		'boundary' => '0_0',
-	),
-));
-$page = $msglist['page'];
-$msglist = $msglist['list'];
+$msglist = \APPS\sysmsg\MFacade_Api::getIndexList('0_0', $num, $next, $next_boundary);
+$page = compact('num', 'next', 'next_boundary');
 
-$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/');
-$render = $render['key'];
+$render = new \APPS\render\MFacade_default();
 $render->oSetTemplate('index.html')
 	->oSetData('msglist', $msglist)
 	->oSetData('page', $page)

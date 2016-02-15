@@ -18,9 +18,8 @@ class MbaseinfoApi extends \Ko_Mode_Item
 				'uid' => $uid,
 			);
 			$this->aInsert($data, $data);
-			\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::USER_NICKNAME.'_'.$uid, array(
-				'update' => $nickname,
-			));
+			$contentApi = new \APPS\content\MFacade_Api();
+			$contentApi->bSet(\APPS\content\MFacade_Const::USER_NICKNAME, $uid, $nickname);
 		}
 		return true;
 	}
@@ -45,21 +44,15 @@ class MbaseinfoApi extends \Ko_Mode_Item
 			);
 			if (strlen($userinfo['logo']))
 			{
-				$sdata = \Ko_App_Rest::VInvoke('storage', 'POST', 'item/', array(
-					'post_style' => 'weburl',
-					'update' => array(
-						'url' => $userinfo['logo'],
-					),
-				), $errno);
-				if (!$errno)
+				$image = \APPS\storage\MFacade_Api::weburl2storage($userinfo['logo'], true);
+				if ($image !== false)
 				{
-					$data['logo'] = $sdata['key'];
+					$data['logo'] = $image;
 				}
 			}
 			$this->aInsert($data, $data);
-			\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::USER_NICKNAME.'_'.$uid, array(
-				'update' => $userinfo['nickname'],
-			));
+			$contentApi = new \APPS\content\MFacade_Api();
+			$contentApi->bSet(\APPS\content\MFacade_Const::USER_NICKNAME, $uid, $userinfo['nickname']);
 		}
 		return true;
 	}

@@ -100,7 +100,7 @@
 				var boundary = $('#getmorediv').data('boundary');
 				var num = $('#getmorediv').data('num');
 				getmoring = true;
-				$.get('/sysmsg/rest/item/',
+				$.get('/rest/sysmsg/',
 					{'page':{'mode': 'sequential', 'boundary': boundary, 'num': num}},
 					function(data, status){
 						if (data.errno) {

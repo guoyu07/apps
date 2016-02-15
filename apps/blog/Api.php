@@ -17,13 +17,8 @@ class MApi extends \Ko_Busi_Api
 		}
 		$ret = array();
 		if (!empty($blogids)) {
-			$aTitle = \Ko_App_Rest::VInvoke('content', 'GET', 'item/', array(
-				'filter' => array(
-					'aid' => \KContent_Const::BLOG_TITLE,
-					'ids' => $blogids,
-				),
-			));
-			$aTitle = $aTitle['list'];
+			$contentApi = new \APPS\content\MFacade_Api();
+			$aTitle = $contentApi->aGetText(\APPS\content\MFacade_Const::BLOG_TITLE, $blogids);
 			if ($info['prev']) {
 				$ret['prev'] = array('blogid' => $info['prev'], 'title' => $aTitle[$info['prev']]);
 			}
@@ -105,7 +100,7 @@ class MApi extends \Ko_Busi_Api
 			}
 			$v = $infos[$v['blogid']];
 			if (strlen($v['cover'])) {
-				$v['cover'] = \Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$v['cover'], array('data_decorate' => 'imageView2/1/w/300/h/200'));
+				$v['cover'] = \APPS\storage\MFacade_Api::getUrl($v['cover'], 'imageView2/1/w/300/h/200');
 			}
 		}
 		unset($v);
@@ -150,22 +145,20 @@ class MApi extends \Ko_Busi_Api
 	{
 		$blogids = \Ko_Tool_Utils::AObjs2ids($list, 'blogid');
 		$infos = $this->blogDao->aGetDetails($list);
-		$aText = \Ko_App_Rest::VInvoke('content', 'GET', 'items/', array(
-			'filter' => array(
-				\KContent_Const::BLOG_TITLE => $blogids,
-				\KContent_Const::BLOG_CONTENT => array('ids' => $blogids, 'maxlength' => 1000, 'ext' => '...'),
-			),
+		$contentApi = new \APPS\content\MFacade_Api();
+		$aText = $contentApi->aGetTextEx(array(
+			\APPS\content\MFacade_Const::BLOG_TITLE => $blogids,
+			\APPS\content\MFacade_Const::BLOG_CONTENT => array('ids' => $blogids, 'maxlength' => 1000, 'ext' => '...'),
 		));
-		$aText = $aText['list'];
 		foreach ($infos as &$v) {
 			if ('回收站' === $v['tags']) {
 				$v = array();
 			}
 			if (!empty($v)) {
-				$v['title'] = $aText[\KContent_Const::BLOG_TITLE][$v['blogid']];
-				$v['content'] = $aText[\KContent_Const::BLOG_CONTENT][$v['blogid']];
+				$v['title'] = $aText[\APPS\content\MFacade_Const::BLOG_TITLE][$v['blogid']];
+				$v['content'] = $aText[\APPS\content\MFacade_Const::BLOG_CONTENT][$v['blogid']];
 				if (strlen($v['cover'])) {
-					$v['cover'] = \Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$v['cover'], array('data_decorate' => 'imageView2/1/w/300/h/200'));
+					$v['cover'] = \APPS\storage\MFacade_Api::getUrl($v['cover'], 'imageView2/1/w/300/h/200');
 				}
 			}
 		}
@@ -198,12 +191,9 @@ class MApi extends \Ko_Busi_Api
 		$data['mtime'] = $data['ctime'];
 		$blogid = $this->blogDao->iInsert($data);
 		if ($blogid) {
-			\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_TITLE.'_'.$blogid, array(
-				'update' => $title,
-			));
-			\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_CONTENT.'_'.$blogid, array(
-				'update' => $content,
-			));
+			$contentApi = new \APPS\content\MFacade_Api();
+			$contentApi->bSet(\APPS\content\MFacade_Const::BLOG_TITLE, $blogid, $title);
+			$contentApi->bSet(\APPS\content\MFacade_Const::BLOG_CONTENT, $blogid, $content);
 
 			$this->_vAddTags($uid, $blogid, $addtags);
 		}
@@ -228,12 +218,9 @@ class MApi extends \Ko_Busi_Api
 		$subtags = array_diff($oldtagarr, $newtagarr);
 		$this->_vSubTags($uid, $blogid, $subtags);
 
-		\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_TITLE.'_'.$blogid, array(
-			'update' => $title,
-		));
-		\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_CONTENT.'_'.$blogid, array(
-			'update' => $content,
-		));
+		$contentApi = new \APPS\content\MFacade_Api();
+		$contentApi->bSet(\APPS\content\MFacade_Const::BLOG_TITLE, $blogid, $title);
+		$contentApi->bSet(\APPS\content\MFacade_Const::BLOG_CONTENT, $blogid, $content);
 
 		$update = array(
 			'mtime' => date('Y-m-d H:i:s'),
@@ -254,12 +241,9 @@ class MApi extends \Ko_Busi_Api
 		}
 		if ('回收站' === $info['tags']) {
 			$this->_vSubTags($uid, $blogid, array('回收站'));
-			\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_TITLE.'_'.$blogid, array(
-				'update' => '',
-			));
-			\Ko_App_Rest::VInvoke('content', 'PUT', 'item/'.\KContent_Const::BLOG_CONTENT.'_'.$blogid, array(
-				'update' => '',
-			));
+			$contentApi = new \APPS\content\MFacade_Api();
+			$contentApi->bSet(\APPS\content\MFacade_Const::BLOG_TITLE, $blogid, '');
+			$contentApi->bSet(\APPS\content\MFacade_Const::BLOG_CONTENT, $blogid, '');
 			return $this->blogDao->iDelete($blogkey);
 		} else {
 			$subtags = $this->_aGetTags($info['tags']);
@@ -340,7 +324,6 @@ class MApi extends \Ko_Busi_Api
 
 	private function _sGetCover($content)
 	{
-		$data = \Ko_App_Rest::VInvoke('storage', 'POST', 'cover/', array('update' => $content));
-		return $data['key'];
+		return \APPS\storage\MFacade_Api::getCover($content);
 	}
 }

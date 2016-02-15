@@ -3,7 +3,7 @@
 namespace APPS\blog;
 
 \Ko_Web_Route::VGet('index', function () {
-	$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
+	$uid = \APPS\user\MFacade_Api::getLoginUid();
 	$blogid = \Ko_Web_Request::IGet('blogid');
 
 	$userinfo = \Ko_Tool_Adapter::VConv($uid, array('user_baseinfo', array('logo80')));
@@ -11,8 +11,7 @@ namespace APPS\blog;
 	$blogApi = new MApi();
 	$taginfos = $blogApi->aGetAllTaginfo($uid);
 
-	$contentApi = \Ko_App_Rest::VInvoke('content', 'POST', 'object/');
-	$contentApi = $contentApi['key'];
+	$contentApi = new \APPS\content\MFacade_Api();
 	$htmlrender = new \Ko_View_Render_HTML($contentApi);
 	if ($blogid) {
 		$bloginfo = $blogApi->aGet($uid, $blogid);
@@ -22,21 +21,23 @@ namespace APPS\blog;
 			exit;
 		}
 
-		$htmlrender->oSetData(\KContent_Const::BLOG_TITLE, $blogid);
-		$htmlrender->oSetData(\KContent_Const::BLOG_CONTENT, $blogid);
+		$htmlrender->oSetData(\APPS\content\MFacade_Const::BLOG_TITLE, $blogid);
+		$htmlrender->oSetData(\APPS\content\MFacade_Const::BLOG_CONTENT, $blogid);
 	} else {
 		$bloginfo = array();
 
-		$htmlrender->oSetData(\KContent_Const::DRAFT_CONTENT, $uid);
-		$htmlrender->oSetData(\KContent_Const::DRAFT_TITLE, $uid);
+		$htmlrender->oSetData(\APPS\content\MFacade_Const::DRAFT_CONTENT, $uid);
+		$htmlrender->oSetData(\APPS\content\MFacade_Const::DRAFT_TITLE, $uid);
 	}
 
-	$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/');
-	$render = $render['key'];
+	$token = \APPS\storage\MFacade_Api::getUploadImageToken(array('type' => 'blog', 'decorate' => 'imageView2/2/w/600/h/600'));
+
+	$render = new \APPS\render\MFacade_default();
 	$render->oSetTemplate('post.html')
 		->oSetData('userinfo', $userinfo)
 		->oSetData('bloginfo', $bloginfo)
 		->oSetData('blogcontent', $htmlrender)
 		->oSetData('taginfos', $taginfos)
+		->oSetData('token', $token)
 		->oSend();
 });

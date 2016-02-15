@@ -17,8 +17,8 @@ class MRest_demo
 	public function get($id, $style = null)
 	{
 		return array(
-			'id' => $id,
-			'name' => 'zhang',
+			'id' => 20,
+			'name' => 'zhangchu',
 		);
 	}
 }

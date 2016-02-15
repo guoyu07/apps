@@ -19,12 +19,6 @@ class MRest_album
 				'title' => 'string',
 			)),
 		),
-		'filterstylelist' => array(
-			'default' => array('list', array('hash', array(
-				'uid' => 'int',
-				'albumid' => 'int',
-			))),
-		),
 		'poststylelist' => array(
 			'default' => array('hash', array(
 				'title' => 'string',
@@ -43,20 +37,13 @@ class MRest_album
 		return compact('uid', 'albumid');
 	}
 
-	public function getMulti($style, $page, $filter, $exstyle = null, $filter_style = 'default')
-	{
-		$api = new MApi();
-		$list = $api->getAlbumInfos($filter);
-		return array('list' => $list);
-	}
-
 	public function post($update, $after = null)
 	{
 		if (0 == strlen($update['title'])) {
 			throw new \Exception('请输入相册标题', 1);
 		}
 
-		$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$uid = \APPS\user\MFacade_Api::getLoginUid();
 
 		$photoApi = new MApi();
 		$albumid = $photoApi->addAlbum($uid, $update['title'], $update['desc']);
@@ -68,7 +55,7 @@ class MRest_album
 
 	public function put($id, $update, $before = null, $after = null, $put_style = 'default')
 	{
-		$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$uid = \APPS\user\MFacade_Api::getLoginUid();
 
 		if ($uid != $id['uid']) {
 			throw new \Exception('修改相册失败', 1);
@@ -89,7 +76,7 @@ class MRest_album
 
 	public function delete($id, $before = null)
 	{
-		$uid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$uid = \APPS\user\MFacade_Api::getLoginUid();
 		if ($uid != $id['uid']) {
 			throw new \Exception('删除相册失败', 1);
 		}

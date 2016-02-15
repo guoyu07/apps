@@ -1,0 +1,120 @@
+<div id="userdata" class="hide"
+     data-uid="{$userinfo.uid}">
+</div>
+
+<div id="tokendata" class="hide" data-token="{$token}"></div>
+
+<div class="main">
+	<div class="title left" style="padding-right: 36px;">
+		<img src="{$userinfo.logo80}" style="border-radius: 40px;vertical-align: middle;">
+	</div>
+	<div class="title left" style="padding-right: 5px;">
+		{$userinfo.nickname} 的视频
+	</div>
+	<div class="title right" style="width:150px;text-align: center;">
+		<button id="btnAddVideo">上传视频</button>
+	</div>
+	<div class="clear"></div>
+
+	<div id="uploadvideolist">
+		<div class="videodiv" style="width: 980px;padding: 10px;">
+			<div class="videotitlediv left" style="width: 500px;height: 30px;">
+				title
+			</div>
+			<div class="videostatusdiv left" style="width: 200px;">
+				status
+			</div>
+			<div class="videosizediv left" style="width: 280px;">
+				size
+			</div>
+		</div>
+	</div>
+	<div class="clear"></div>
+
+	<div id="videolist">
+		{foreach $videolist as $video}
+		{$video.videoid}
+		{if 0 == $video.p_code && strlen($video.videourl)}
+		<video src="{$video.videourl}" controls="controls" height="360" width="480">
+			您的浏览器不支持 video 标签。
+		</video>
+		{elseif 1 == $video.p_code || 2 == $video.p_code}
+		正在处理视频数据，请稍后播放
+		{else}
+		视频数据处理失败，无法播放
+		{/if}
+		<hr>
+		{/foreach}
+	</div>
+	<div class="clear"></div>
+</div>
+
+{literal}
+<script language="JavaScript">
+	(function(){
+		//上传照片
+		$(document).ready(function() {
+			var lasttime = 0;
+			var lastloaded = 0;
+			var token = $('#tokendata').data('token');
+			var uploaderConfig = {
+				browse_button: 'btnAddVideo',
+				url: 'http://upload.qiniu.com/',
+				multi_selection: false,
+				multipart_params: {
+					'token': token
+				},
+				filters: {
+					mime_types: [{'title': '视频文件', 'extensions': 'mov'}],
+					max_file_size: '500mb'
+				},
+				init: {
+					FilesAdded: function (up, files) {
+						plupload.each(files, function(file) {
+							var videodiv = $('#uploadvideolist .videodiv:first').clone();
+							videodiv.attr('id', file.id);
+							videodiv.find('.videotitlediv').html(file.name);
+							videodiv.find('.videostatusdiv').text('等待上传中...');
+							videodiv.find('.videosizediv').text(plupload.formatSize(file.size));
+							videodiv.show();
+							$('#uploadvideolist').append(videodiv);
+						});
+						up.start();
+					},
+					BeforeUpload: function (up, file) {
+						var time = new Date();
+						time = time.getTime();
+						lasttime = time;
+						lastloaded = 0;
+					},
+					UploadProgress: function (up, file) {
+						var time = new Date();
+						time = time.getTime();
+						var speed = (file.loaded - lastloaded) / (time - lasttime) * 1.024;
+						$('#uploadvideolist [id=' + file.id + '] .videostatusdiv').html(file.percent + '% - ' + Math.round(speed, 2) + 'K/s');
+						lasttime = time;
+						lastloaded = file.loaded;
+					},
+					FileUploaded: function (up, file, info) {
+						eval('var data = ' + info.response);
+						console.log(data);
+						alert(info.response);
+						if (data.errno) {
+							alert(data.error);
+						}
+					},
+					UploadComplete: function (up, files) {
+						var uid = $('#userdata').data('uid');
+						//window.location.href = '?uid=' + uid;
+					},
+					Error: function (up, err) {
+						//alert("Error #" + err.code + ": " + err.message + "\n");
+					}
+				}
+			};
+			var btnUploader = new plupload.Uploader(uploaderConfig);
+			btnUploader.init();
+		});
+	})();
+</script>
+{/literal}

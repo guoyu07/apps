@@ -5,7 +5,7 @@ namespace APPS\photo;
 \Ko_Web_Route::VGet('index', function () {
 	static $num = 20;
 
-	$loginuid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
+	$loginuid = \APPS\user\MFacade_Api::getLoginUid();
 
 	$uid = \Ko_Web_Request::IGet('uid');
 	$albumid = \Ko_Web_Request::IGet('albumid');
@@ -21,16 +21,15 @@ namespace APPS\photo;
 	$userinfo = \Ko_Tool_Adapter::VConv($uid, array('user_baseinfo', array('logo80')));
 	$photolist = $photoApi->getPhotoListBySeq($uid, $albumid, '0_0_0', $num, $next, $next_boundary, 'imageView2/2/w/240');
 
-	$token = \Ko_App_Rest::VInvoke('storage', 'POST', 'token/',
-		array('update' => array('uid' => $loginuid, 'albumid' => $albumid)));
-	$token = $token['key'];
+	$token = \APPS\storage\MFacade_Api::getUploadImageToken(array('type' => 'photo',
+		'uid' => $loginuid, 'albumid' => $albumid, 'decorate' => 'imageView2/2/w/150/h/150'));
 
-	$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/');
-	$render = $render['key'];
+	$render = new \APPS\render\MFacade_default();
 	if ($loginuid == $uid) {
 		$allalbumlist = $photoApi->getAllAlbumList($uid);
 		$render->oSetData('allalbumlist', $allalbumlist);
 	}
+
 	$render->oSetTemplate('album.html')
 		->oSetData('userinfo', $userinfo)
 		->oSetData('albuminfo', $albuminfo)

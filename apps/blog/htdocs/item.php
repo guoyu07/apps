@@ -23,14 +23,12 @@ namespace APPS\blog;
 	}
 	$prevnextInfo = $blogApi->aGetPrevNextTitle($uid, $blogid, $tag);
 
-	$contentApi = \Ko_App_Rest::VInvoke('content', 'POST', 'object/');
-	$contentApi = $contentApi['key'];
+	$contentApi = new \APPS\content\MFacade_Api();
 	$htmlrender = new \Ko_View_Render_HTML($contentApi);
-	$htmlrender->oSetData(\KContent_Const::BLOG_TITLE, $blogid);
-	$htmlrender->oSetData(\KContent_Const::BLOG_CONTENT, $blogid);
+	$htmlrender->oSetData(\APPS\content\MFacade_Const::BLOG_TITLE, $blogid);
+	$htmlrender->oSetData(\APPS\content\MFacade_Const::BLOG_CONTENT, $blogid);
 
-	$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/');
-	$render = $render['key'];
+	$render = new \APPS\render\MFacade_default();
 	$render->oSetTemplate('item.html')
 		->oSetData('tag', $tag)
 		->oSetData('prevnext', $prevnextInfo)

@@ -9,22 +9,25 @@ Ko_Web_Event::On('ko.config', 'after', function () {
 		Ko_Web_Response::VSend();
 		exit;
 	}
+
 	if (!Ko_Tool_Safe::BCheckMethod(array('*.' . MAIN_DOMAIN))) {
 		Ko_Web_Response::VSetHttpCode(403);
 		Ko_Web_Response::VSend();
 		exit;
 	}
+
 	$templateroot = Ko_Web_Config::SGetValue('templateroot');
 	if (strlen($templateroot) && is_dir($templateroot)) {
 		define('KO_TEMPLATE_DIR', $templateroot);
 	}
+
 	$host = Ko_Web_Request::SHttpHost();
 	if (PASSPORT_DOMAIN === $host) {
-		Ko_App_Rest::VInvoke('user', 'PUT', 'loginref/');
+		\APPS\user\MFacade_loginrefApi::VInit();
 	} else if (WWW_DOMAIN === $host) {
-		$loginuid = Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$loginuid = \APPS\user\MFacade_Api::getLoginUid();
 		if (empty($loginuid)) {
-			Ko_Web_Response::VSetRedirect('http://'.PASSPORT_DOMAIN.'/user/login');
+			Ko_Web_Response::VSetRedirect('http://' . PASSPORT_DOMAIN . '/user/login');
 			Ko_Web_Response::VSend();
 			exit;
 		}
@@ -38,7 +41,7 @@ Ko_Web_Event::On('ko.error', '500', function ($errno, $errstr, $errfile, $errlin
 
 Ko_Web_Event::On('ko.dispatch', 'before', function () {
 	$host = Ko_Web_Request::SHttpHost();
-	if ('zc.'.MAIN_DOMAIN === $host) {
+	if ('zc.' . MAIN_DOMAIN === $host) {
 		$_GET['uid'] = 20;
 	}
 });

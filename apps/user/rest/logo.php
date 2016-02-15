@@ -24,7 +24,7 @@ class MRest_logo
 
 	public function post($update, $after = null)
 	{
-		$content = \Ko_App_Rest::VInvoke('storage', 'GET', 'item/'.$update['fileid'], array('data_style' => 'content'));
+		$content = \APPS\storage\MFacade_Api::getContent($update['fileid']);
 		if ('' === $content)
 		{
 			throw new \Exception('获取原文件失败', 1);
@@ -92,17 +92,11 @@ class MRest_logo
 		{
 			throw new \Exception('文件转换失败', 3);
 		}
-		$data = \Ko_App_Rest::VInvoke('storage', 'POST', 'item/', array(
-			'post_style' => 'content',
-			'update' => array(
-				'content' => $dst,
-			),
-		), $errno);
-		if ($errno)
+		$logoid = \APPS\storage\MFacade_Api::content2storage($dst, true);
+		if (false === $logoid)
 		{
 			throw new \Exception('文件保存失败', 3);
 		}
-		$logoid = $data['key'];
 
 		$loginApi = new MloginApi;
 		$baseinfoApi = new MbaseinfoApi;

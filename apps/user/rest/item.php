@@ -15,9 +15,6 @@ class MRest_item
 				),
 			),
 		),
-		'filterstylelist' => array(
-			'default' => array('list', 'int'),
-		),
 		'poststylelist' => array(
 			'default' => array('hash', array(
 				'username' => 'string',
@@ -35,13 +32,6 @@ class MRest_item
 			)),
 		),
 	);
-
-	public function getMulti($style, $page, $filter, $exstyle = null, $filter_style = 'default')
-	{
-		$api = new MbaseinfoApi();
-		$list = $api->aGetListByKeys($filter);
-		return array('list' => $list);
-	}
 
 	public function post($update, $after = null)
 	{

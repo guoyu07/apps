@@ -33,7 +33,7 @@ namespace APPS\blog;
 		}
 	}
 	if ('回收站' === $tag) {
-		$loginuid = \Ko_App_Rest::VInvoke('user', 'GET', 'loginuid/');
+		$loginuid = \APPS\user\MFacade_Api::getLoginUid();
 		if ($loginuid != $uid) {
 			\Ko_Web_Response::VSetRedirect('?uid='.$uid);
 			\Ko_Web_Response::VSend();
@@ -42,19 +42,17 @@ namespace APPS\blog;
 	}
 	$blogids = \Ko_Tool_Utils::AObjs2ids($bloglist, 'blogid');
 
-	$contentApi = \Ko_App_Rest::VInvoke('content', 'POST', 'object/');
-	$contentApi = $contentApi['key'];
+	$contentApi = new \APPS\content\MFacade_Api();
 	$htmlrender = new \Ko_View_Render_HTML($contentApi);
-	$htmlrender->oSetData(\KContent_Const::BLOG_TITLE, $blogids);
-	$htmlrender->oSetData(\KContent_Const::BLOG_CONTENT, array('ids' => $blogids, 'maxlength' => 1000));
+	$htmlrender->oSetData(\APPS\content\MFacade_Const::BLOG_TITLE, $blogids);
+	$htmlrender->oSetData(\APPS\content\MFacade_Const::BLOG_CONTENT, array('ids' => $blogids, 'maxlength' => 1000));
 
 	$page = array(
 		'num' => $num,
 		'no' => $page,
 		'data_total' => $total,
 	);
-	$render = \Ko_App_Rest::VInvoke('render', 'POST', 'object/');
-	$render = $render['key'];
+	$render = new \APPS\render\MFacade_default();
 	$render->oSetTemplate('user.html')
 		->oSetData('tag', $tag)
 		->oSetData('userinfo', $userinfo)
