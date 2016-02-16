@@ -15,7 +15,7 @@ namespace APPS\storage;
 		else
 		{
 			$api->vSetAvinfo($data['key'], $data['avinfo']);
-			$videoid = \APPS\video\MFacade_Api::add($data['uid'], $data['key'], $data['persistentId']);
+			$videoid = \APPS\video\MFacade_Api::add($data['uid'], $data['key'], $data['persistentId'], $data['name']);
 			if (empty($videoid))
 			{
 				$data = array('errno' => 3, 'error' => '保存用户信息失败');

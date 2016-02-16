@@ -70,6 +70,12 @@ class MFacade_Api
 		return $sizes;
 	}
 
+	public static function getAvinfos($ids)
+	{
+		$api = new MApi();
+		return $api->aGetAvinfos($ids);
+	}
+
 	public static function getUploadImageToken($callbackInfo)
 	{
 		$api = new MApi();

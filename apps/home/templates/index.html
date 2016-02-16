@@ -36,6 +36,26 @@
 			</div>
 			<div class="clear"></div>
 		</div>
+		<div class="hide msgdiv msgtype_3" style="padding-bottom: 20px;">
+			<div class="title left msgdiv_userlogo" style="padding-right: 36px;">
+				<a href="###"><img style="border-radius: 40px;vertical-align: middle;"></a>
+			</div>
+			<div class="title left msgdiv_username" style="padding-right: 5px;">
+				<a href="###"></a>
+			</div>
+			<div class="title left msgdiv_videotitle">
+				上传了一个视频《<span></span>》
+			</div>
+			<div class="title right msgdiv_ctime" style="font-size: 12px;color: #aaaaaa;">
+			</div>
+			<div class="clear"></div>
+			<div class="msgdiv_videocontent">
+				<video src="###" controls="controls" height="360" width="480">
+					您的浏览器不支持视频播放。
+				</video>
+			</div>
+			<div class="clear"></div>
+		</div>
 		{if 1 == $msg.msgtype}
 		<div class="msgdiv msgtype_1" style="padding-bottom: 20px;">
 			<div class="title left msgdiv_userlogo" style="padding-right: 36px;">
@@ -78,6 +98,35 @@
 				<img class="left" src="{$msg.content.bloginfo.cover}" style="padding: 6px 6px 6px 6px;">
 				{/if}
 				{$msg.content.bloginfo.content}
+			</div>
+			<div class="clear"></div>
+		</div>
+		{else if 3 == $msg.msgtype}
+		<div class="msgdiv msgtype_3" style="padding-bottom: 20px;">
+			<div class="title left msgdiv_userlogo" style="padding-right: 36px;">
+				<a href="/video/user?uid={$msg.content.userinfo.uid}"><img src="{$msg.content.userinfo.logo80}" style="border-radius: 40px;vertical-align: middle;"></a>
+			</div>
+			<div class="title left msgdiv_username" style="padding-right: 5px;">
+				<a href="/video/user?uid={$msg.content.userinfo.uid}">{$msg.content.userinfo.nickname}</a>
+			</div>
+			<div class="title left msgdiv_blogtitle">
+				上传了一个视频《<span>{$msg.content.videoinfo.title}</span>》
+			</div>
+			<div class="title right msgdiv_ctime" style="font-size: 12px;color: #aaaaaa;">
+				{$msg.ctime|substr:0:16}
+			</div>
+			<div class="clear"></div>
+			<div class="msgdiv_videocontent" style="line-height: 25px;font-size: 14px;color: #aaaaaa;">
+				{if 0 == $msg.content.videoinfo.p_code && strlen($msg.content.videoinfo.videourl)}
+				{$height = intval($msg.content.videoinfo.avinfo.video.height * 480 / $msg.content.videoinfo.avinfo.video.width)}
+				<video src="{$msg.content.videoinfo.videourl}" controls="controls" height="{$height}" width="480">
+					您的浏览器不支持视频播放。
+				</video>
+				{elseif 1 == $msg.content.videoinfo.p_code || 2 == $msg.content.videoinfo.p_code}
+				正在处理视频数据，稍后刷新页面即可播放。
+				{else}
+				视频数据处理失败，无法播放。
+				{/if}
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -143,6 +192,22 @@
 										$msgdiv.find('.msgdiv_blogcontent').html('<img class="left" src="'
 											+ n.content.bloginfo.cover + '" style="padding: 6px 6px 6px 6px;">'
 											+ $msgdiv.find('.msgdiv_blogcontent').html());
+									}
+								} else if (3 == n.msgtype) {
+									$msgdiv = $('#msglist .msgtype_3:first').clone();
+									$msgdiv.find('.msgdiv_userlogo a').attr('href', '/video/user?uid=' + n.content.uid);
+									$msgdiv.find('.msgdiv_userlogo img').attr('src', n.content.userinfo.logo80);
+									$msgdiv.find('.msgdiv_username a').attr('href', '/video/user?uid=' + n.content.uid);
+									$msgdiv.find('.msgdiv_username a').text(n.content.userinfo.nickname);
+									$msgdiv.find('.msgdiv_videotitle span').text(n.content.videoinfo.title);
+									$msgdiv.find('.msgdiv_ctime').text(n.ctime.substr(0, 16));
+									if (0 == n.content.videoinfo.p_code && n.content.videoinfo.videourl.length) {
+										$msgdiv.find('.msgdiv_videocontent video').attr('src', n.content.videoinfo.videourl);
+										$msgdiv.find('.msgdiv_videocontent video').attr('height', n.content.videoinfo.avinfo.video.height * 480 / n.content.videoinfo.avinfo.video.width);
+									} else if (1 == n.content.videoinfo.p_code || 2 == n.content.videoinfo.p_code) {
+										$msgdiv.find('.msgdiv_videocontent').text('正在处理视频数据，稍后刷新页面即可播放。');
+									} else {
+										$msgdiv.find('.msgdiv_videocontent').text('视频数据处理失败，无法播放。');
 									}
 								}
 								$('#msglist').append($msgdiv);

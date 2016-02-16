@@ -9,7 +9,7 @@ class MApi extends \Ko_Mode_Sysmsg
 		'user' => 'user',
 		'merge' => 'merge',
 		'kind' => array(
-			'index' => array(MFacade_Const::PHOTO, MFacade_Const::BLOG),
+			'index' => array(MFacade_Const::PHOTO, MFacade_Const::BLOG, MFacade_Const::VIDEO),
 		),
 	);
 
@@ -17,7 +17,7 @@ class MApi extends \Ko_Mode_Sysmsg
 	{
 		$msglist = $this->aGetListSeq(0, 'index', $boundary, $num, $next, $next_boundary);
 
-		$userlist = $albumlist = $photolist = $bloglist = array();
+		$userlist = $albumlist = $photolist = $bloglist = $videolist = array();
 		foreach ($msglist as $v) {
 			if (MFacade_Const::PHOTO == $v['msgtype']) {
 				$userlist[$v['content']['uid']] = $v['content']['uid'];
@@ -26,6 +26,9 @@ class MApi extends \Ko_Mode_Sysmsg
 			} else if (MFacade_Const::BLOG == $v['msgtype']) {
 				$userlist[$v['content']['uid']] = $v['content']['uid'];
 				$bloglist[] = array('uid' => $v['content']['uid'], 'blogid' => $v['content']['blogid']);
+			} else if (MFacade_Const::VIDEO == $v['msgtype']) {
+				$userlist[$v['content']['uid']] = $v['content']['uid'];
+				$videolist[] = array('uid' => $v['content']['uid'], 'videoid' => $v['content']['videoid']);
 			}
 		}
 
@@ -33,6 +36,7 @@ class MApi extends \Ko_Mode_Sysmsg
 		$photoinfos = \APPS\photo\MFacade_Api::getPhotoInfos($photolist);
 		$albuminfos = \APPS\photo\MFacade_Api::getAlbumInfos($albumlist);
 		$bloginfos = \APPS\blog\MFacade_Api::getInfos($bloglist);
+		$videoinfos = \APPS\video\MFacade_Api::getInfos($videolist);
 		foreach ($msglist as $k => &$v) {
 			if (MFacade_Const::PHOTO == $v['msgtype']) {
 				$v['content']['userinfo'] = $userlist[$v['content']['uid']];
@@ -59,6 +63,13 @@ class MApi extends \Ko_Mode_Sysmsg
 				$v['content']['userinfo'] = $userlist[$v['content']['uid']];
 				$v['content']['bloginfo'] = $bloginfos[$v['content']['blogid']];
 				if (empty($v['content']['bloginfo'])) {
+					$this->vDelete(0, $v['msgid']);
+					unset($msglist[$k]);
+				}
+			} else if (MFacade_Const::VIDEO == $v['msgtype']) {
+				$v['content']['userinfo'] = $userlist[$v['content']['uid']];
+				$v['content']['videoinfo'] = $videoinfos[$v['content']['videoid']];
+				if (empty($v['content']['videoinfo'])) {
 					$this->vDelete(0, $v['msgid']);
 					unset($msglist[$k]);
 				}

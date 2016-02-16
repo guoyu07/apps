@@ -11,13 +11,24 @@
 	<div class="title left" style="padding-right: 5px;">
 		{$userinfo.nickname} 的视频
 	</div>
+	{if $logininfo.uid == $userinfo.uid}
+	{if $recycle}
+	<div class="title right" style="width:150px;text-align: center;font-size: 14px;color: #aaaaaa;">
+		<a href="?uid={$userinfo.uid}">返回</a>
+	</div>
+	{else}
+	<div class="title right" style="width:150px;text-align: center;font-size: 14px;color: #aaaaaa;">
+		<a href="?uid={$userinfo.uid}&recycle=1">回收站</a>
+	</div>
+	{/if}
+	{/if}
 	<div class="title right" style="width:150px;text-align: center;">
 		<button id="btnAddVideo">上传视频</button>
 	</div>
 	<div class="clear"></div>
 
 	<div id="uploadvideolist">
-		<div class="videodiv" style="width: 980px;padding: 10px;">
+		<div class="videodiv hide" style="width: 980px;padding: 10px;">
 			<div class="videotitlediv left" style="width: 500px;height: 30px;">
 				title
 			</div>
@@ -32,27 +43,175 @@
 	<div class="clear"></div>
 
 	<div id="videolist">
-		{foreach $videolist as $video}
-		{$video.videoid}
-		{if 0 == $video.p_code && strlen($video.videourl)}
-		<video src="{$video.videourl}" controls="controls" height="360" width="480">
-			您的浏览器不支持 video 标签。
-		</video>
-		{elseif 1 == $video.p_code || 2 == $video.p_code}
-		正在处理视频数据，请稍后播放
-		{else}
-		视频数据处理失败，无法播放
-		{/if}
-		<hr>
+		{foreach $videolist as $index => $video}
+		{$height = intval($video.avinfo.video.height * 480 / $video.avinfo.video.width)}
+		<div class="videodiv" data-videoid="{$video.videoid}" style="padding-bottom: 20px;">
+			{if $index % 2 == 0}
+			<div class="left" style="width: 480px;height: {$height}px;padding: 10px;">
+				{if 0 == $video.p_code && strlen($video.videourl)}
+				<video src="{$video.videourl}" controls="controls" height="{$height}" width="480">
+					您的浏览器不支持视频播放。
+				</video>
+				{elseif 1 == $video.p_code || 2 == $video.p_code}
+					正在处理视频数据，稍后刷新页面即可播放。
+				{else}
+					视频数据处理失败，无法播放。
+				{/if}
+			</div>
+			{/if}
+
+			<div class="left" style="width: 480px;height: {$height}px;padding: 10px;">
+				<div style="height: 40px;line-height: 40px;">
+					<div class="left">
+						<span class="txtVideotitle">{$video.title|default:'无标题'}</span>
+						{if $logininfo.uid == $userinfo.uid}
+				        <span class="inputVideotitle hide">
+			            <input type="text" value="{$video.title}" placeholder="视频标题" style="width: 200px;height: 30px;">
+				        </span>
+						{/if}
+					</div>
+					{if $logininfo.uid == $userinfo.uid}
+					<div class="right" style="width: 40px;font-size: 12px;color: #aaaaaa;">
+						<a href="javascript:;" class="delvideo">删除</a>
+					</div>
+					{if $recycle}
+					<div class="right" style="width: 40px;font-size: 12px;color: #aaaaaa;">
+						<a href="javascript:;" class="recovervideo">恢复</a>
+					</div>
+					{/if}
+					{/if}
+					<div class="clear"></div>
+				</div>
+				<div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
+					上传时间：{$video.ctime}
+				</div>
+				<div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
+					拍摄时间：{$video.avinfo.format.tags.creation_time}
+				</div>
+				<div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
+					时长：{$video.avinfo.format.duration}
+				</div>
+				<div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
+					大小：{$video.avinfo.video.width} x {$video.avinfo.video.height}
+				</div>
+				<div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
+					原始文件大小：{$video.avinfo.format.size}
+				</div>
+				<div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
+					原始文件格式：{$video.avinfo.format.format_long_name}
+				</div>
+				<div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
+					帧率：{$video.avinfo.video.avg_frame_rate}
+				</div>
+				<div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
+					比特率：{$video.avinfo.format.bit_rate}
+				</div>
+			</div>
+
+			{if $index % 2 == 1}
+			<div class="left" style="width: 480px;height: {$height}px;padding: 10px;">
+				{if 0 == $video.p_code && strlen($video.videourl)}
+				<video src="{$video.videourl}" controls="controls" height="{$height}" width="480">
+					您的浏览器不支持视频播放。
+				</video>
+				{elseif 1 == $video.p_code || 2 == $video.p_code}
+				正在处理视频数据，稍后刷新页面即可播放。
+				{else}
+				视频数据处理失败，无法播放。
+				{/if}
+			</div>
+			{/if}
+
+			<div class="clear"></div>
+		</div>
 		{/foreach}
 	</div>
-	<div class="clear"></div>
 </div>
 
 {literal}
 <script language="JavaScript">
 	(function(){
-		//上传照片
+		//删除视频
+		$('body').delegate('.recovervideo', 'click', function(){
+			var uid = $('#userdata').data('uid');
+			var videoid = $(this).closest('.videodiv').data('videoid');
+			$.post('rest/item/' + uid + '_' + videoid, {'method': 'PUT', 'put_style': 'recover'}, function(data, status){
+				if (data.errno) {
+					alert(data.error);
+				} else {
+					window.location.reload();
+				}
+			}, 'json');
+		});
+	})();
+
+	(function(){
+		//删除视频
+		$('body').delegate('.delvideo', 'click', function(){
+			var uid = $('#userdata').data('uid');
+			var videoid = $(this).closest('.videodiv').data('videoid');
+			if (confirm('你确认要删除这个视频？')) {
+				$.post('rest/item/' + uid + '_' + videoid, {'method': 'DELETE'}, function(data, status){
+					if (data.errno) {
+						alert(data.error);
+					} else {
+						window.location.reload();
+					}
+				}, 'json');
+			}
+		});
+	})();
+
+	(function(){
+		//修改视频标题
+		function saveVideoTitle(root) {
+			var oldVal = root.find('.txtVideotitle').text();
+			var newVal = root.find('.inputVideotitle input').val();
+			if (oldVal != newVal && '' != newVal) {
+				var uid = $('#userdata').data('uid');
+				var videoid = root.data('videoid');
+				$.post('rest/item/' + uid + '_' + videoid,
+					{'method':'PUT', 'put_style':'title', 'update': newVal},
+					function(data, status){
+						if (data.errno) {
+							alert(data.error);
+						} else {
+							root.find('.txtVideotitle').text(newVal);
+							root.find('.txtVideotitle').show();
+							root.find('.inputVideotitle').hide();
+						}
+					}, 'json');
+			} else {
+				root.find('.txtVideotitle').show();
+				root.find('.inputVideotitle').hide();
+			}
+		}
+		if ($('.inputVideotitle').length) {
+			$('body').delegate('.txtVideotitle', 'mouseover', function(){
+				var root = $(this).closest('.videodiv');
+				root.find('.txtVideotitle').hide();
+				root.find('.inputVideotitle').show();
+				root.find('.inputVideotitle input').focus();
+			});
+			$('body').delegate('.inputVideotitle', 'mouseout', function(){
+				var root = $(this).closest('.videodiv');
+				saveVideoTitle(root);
+			});
+			$('body').delegate('.inputVideotitle', 'keydown', function(e){
+				var root = $(this).closest('.videodiv');
+				if (13 == e.keyCode) {
+					saveVideoTitle(root);
+				} else if (27 == e.keyCode) {
+					root.find('.txtVideotitle').show();
+					root.find('.inputVideotitle').hide();
+					root.find('.inputVideotitle input').val(root.find('.txtVideotitle').text());
+				}
+			});
+		}
+	})();
+
+	(function(){
+		//上传视频
 		$(document).ready(function() {
 			var lasttime = 0;
 			var lastloaded = 0;
@@ -97,15 +256,13 @@
 					},
 					FileUploaded: function (up, file, info) {
 						eval('var data = ' + info.response);
-						console.log(data);
-						alert(info.response);
 						if (data.errno) {
 							alert(data.error);
 						}
 					},
 					UploadComplete: function (up, files) {
 						var uid = $('#userdata').data('uid');
-						//window.location.href = '?uid=' + uid;
+						window.location.href = '?uid=' + uid;
 					},
 					Error: function (up, err) {
 						//alert("Error #" + err.code + ": " + err.message + "\n");

@@ -20,15 +20,14 @@ class MApi extends \Ko_Data_Qiniu
 			'7xawfx.com1.z0.glb.clouddn.com');
 	}
 
-	public function aGetAvinfo($sDest)
+	public function aGetAvinfos($aDest)
 	{
-		$ret = $this->avinfoDao->aGet($sDest);
-		$avinfo = \Ko_Tool_Enc::ADecode($ret['avinfo']);
-		if (false === $avinfo)
-		{
-			return array();
+		$list = $this->avinfoDao->aGetListByKeys($aDest);
+		foreach ($list as &$v) {
+			$v['avinfo'] = \Ko_Tool_Enc::ADecode($v['avinfo']);
 		}
-		return $avinfo;
+		unset($v);
+		return $list;
 	}
 
 	public function vSetAvinfo($sDest, $avinfo)
