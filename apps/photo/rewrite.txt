@@ -1,4 +1,0 @@
-/rest/(.*)/$ /rest.php?uri=$1/
-/rest/(.*) /rest.php?uri=$1
-
-/$ /user
