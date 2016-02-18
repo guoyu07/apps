@@ -86,9 +86,6 @@
 					上传时间：{$video.ctime}
 				</div>
 				<div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
-					拍摄时间：{$video.avinfo.format.tags.creation_time}
-				</div>
-				<div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
 					时长：{$video.avinfo.format.duration}
 				</div>
 				<div style="height: 20px;line-height: 20px;font-size: 12px;color: #aaaaaa;">
@@ -224,7 +221,7 @@
 					'token': token
 				},
 				filters: {
-					mime_types: [{'title': '视频文件', 'extensions': 'mov'}],
+					mime_types: [{'title': '视频文件', 'extensions': 'mov,mp4'}],
 					max_file_size: '500mb'
 				},
 				init: {
