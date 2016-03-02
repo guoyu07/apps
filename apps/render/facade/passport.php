@@ -2,7 +2,7 @@
 
 namespace APPS\render;
 
-class MFacade_passport extends Mbase
+class MFacade_passport extends MFacade_base
 {
 	public function sRender()
 	{

@@ -2,7 +2,7 @@
 
 namespace APPS\render;
 
-class MFacade_default extends Mbase
+class MFacade_default extends MFacade_base
 {
 	public function sRender()
 	{
