@@ -7,10 +7,10 @@ class MApi extends \Ko_Busi_Api
 {
 	public function getInfos($list)
 	{
-		$videoids = \Ko_Tool_Utils::AObjs2ids($list, 'videoid');
 		$infos = $this->listDao->aGetDetails($list);
-		$contentApi = new \APPS\content\MFacade_Api();
-		$aText = $contentApi->aGetText(\APPS\content\MFacade_Const::VIDEO_TITLE, $videoids);
+		\APPS\content\MFacade_Api::FillListInfo($infos, 'videoid', array(
+			\APPS\content\MFacade_Const::VIDEO_TITLE => 'title',
+		));
 		$videos = \Ko_Tool_Utils::AObjs2ids($infos, 'video');
 		$avinfos = \APPS\storage\MFacade_Api::getAvinfos($videos);
 		foreach ($infos as &$v) {
@@ -18,7 +18,6 @@ class MApi extends \Ko_Busi_Api
 				$v = array();
 			}
 			if (!empty($v)) {
-				$v['title'] = $aText[$v['videoid']];
 				$v['avinfo'] = $avinfos[$v['video']]['avinfo'];
 				if (0 == $v['p_code']) {
 					$v['p_info'] = \Ko_Tool_Enc::ADecode($v['p_info']);
@@ -101,13 +100,12 @@ class MApi extends \Ko_Busi_Api
 	{
 		$option = new \Ko_Tool_SQL();
 		$list = $this->listDao->aGetList($option->oWhere('uid = ? and delflag = ?', $uid, $recycle)->oOrderBy('videoid desc'));
-		$videoids = \Ko_Tool_Utils::AObjs2ids($list, 'videoid');
-		$contentApi = new \APPS\content\MFacade_Api();
-		$aText = $contentApi->aGetText(\APPS\content\MFacade_Const::VIDEO_TITLE, $videoids);
+		\APPS\content\MFacade_Api::FillListInfo($list, 'videoid', array(
+			\APPS\content\MFacade_Const::VIDEO_TITLE => 'title',
+		));
 		$videos = \Ko_Tool_Utils::AObjs2ids($list, 'video');
 		$avinfos = \APPS\storage\MFacade_Api::getAvinfos($videos);
 		foreach ($list as &$v) {
-			$v['title'] = $aText[$v['videoid']];
 			$v['avinfo'] = $avinfos[$v['video']]['avinfo'];
 			if (0 == $v['p_code']) {
 				$v['p_info'] = \Ko_Tool_Enc::ADecode($v['p_info']);

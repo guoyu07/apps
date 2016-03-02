@@ -11,18 +11,11 @@ class MApi extends \Ko_Busi_Api
 
 	public function getAlbumInfos($list)
 	{
-		$albumids = \Ko_Tool_Utils::AObjs2ids($list, 'albumid');
 		$infos = $this->albumDao->aGetDetails($list);
-		$contentApi = new \APPS\content\MFacade_Api();
-		$aText = $contentApi->aGetTextEx(array(
-			\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE => $albumids,
-			\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC => $albumids,
+		\APPS\content\MFacade_Api::FillListInfo($infos, 'albumid', array(
+			\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE => 'title',
+			\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC => 'desc',
 		));
-		foreach ($infos as &$v) {
-			$v['title'] = $aText[\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE][$v['albumid']];
-			$v['desc'] = $aText[\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC][$v['albumid']];
-		}
-		unset($v);
 		return $infos;
 	}
 
@@ -74,13 +67,10 @@ class MApi extends \Ko_Busi_Api
 		$albumkey = compact('uid', 'albumid');
 		$info = $this->albumDao->aGet($albumkey);
 		if (!empty($info)) {
-			$contentApi = new \APPS\content\MFacade_Api();
-			$aText = $contentApi->aGetTextEx(array(
-				\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE => array($albumid),
-				\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC => array($albumid),
+			\APPS\content\MFacade_Api::FillItemInfo($info, 'albumid', array(
+				\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE => 'title',
+				\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC => 'desc',
 			));
-			$info['title'] = $aText[\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE][$albumid];
-			$info['desc'] = $aText[\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC][$albumid];
 			$info['isrecycle'] = $info['albumid'] == $this->_getRecycleAlbumid($uid);
 		}
 		return $info;
@@ -112,15 +102,14 @@ class MApi extends \Ko_Busi_Api
 				$next = $next['photoid'];
 			}
 		}
-		$photoids = \Ko_Tool_Utils::AObjs2ids($photolist, 'photoid');
-		$contentApi = new \APPS\content\MFacade_Api();
-		$aText = $contentApi->aGetText(\APPS\content\MFacade_Const::PHOTO_TITLE, $photoids);
+		\APPS\content\MFacade_Api::FillListInfo($photolist, 'photoid', array(
+			\APPS\content\MFacade_Const::PHOTO_TITLE => 'title',
+		));
 		$images = \Ko_Tool_Utils::AObjs2ids($photolist, 'image');
 		$sizes = \APPS\storage\MFacade_Api::getSizeAndBrief($images, $decorate);
 		foreach ($photolist as $k => &$v) {
 			$v['size'] = $sizes[$v['image']]['size'];
 			$v['image'] = $sizes[$v['image']]['brief'];
-			$v['title'] = $aText[$v['photoid']];
 
 			$update = array();
 			if ($boundary_pos + $k + 1 != $v['pos']) {
@@ -232,16 +221,12 @@ class MApi extends \Ko_Busi_Api
 		$option = new \Ko_Tool_SQL();
 		$option->oWhere('uid = ?', $uid)->oOrderBy('sort desc');
 		$albumlist = $this->albumDao->aGetList($option);
-		$albumids = \Ko_Tool_Utils::AObjs2ids($albumlist, 'albumid');
-		$contentApi = new \APPS\content\MFacade_Api();
-		$aText = $contentApi->aGetTextEx(array(
-			\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE => $albumids,
-			\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC => $albumids,
+		\APPS\content\MFacade_Api::FillListInfo($albumlist, 'albumid', array(
+			\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE => 'title',
+			\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC => 'desc',
 		));
 		$recycleid = $this->_getRecycleAlbumid($uid);
 		foreach ($albumlist as &$v) {
-			$v['title'] = $aText[\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE][$v['albumid']];
-			$v['desc'] = $aText[\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC][$v['albumid']];
 			$v['isrecycle'] = $v['albumid'] == $recycleid;
 		}
 		unset($v);
@@ -272,15 +257,12 @@ class MApi extends \Ko_Busi_Api
 		}
 		unset($v);
 		$photoinfos = $this->photoDao->aGetDetails($allphotoids);
-		$contentApi = new \APPS\content\MFacade_Api();
-		$aText = $contentApi->aGetTextEx(array(
-			\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE => $albumids,
-			\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC => $albumids,
+		\APPS\content\MFacade_Api::FillListInfo($albumlist, 'albumid', array(
+			\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE => 'title',
+			\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC => 'desc',
 		));
 		$recycleid = $this->_getRecycleAlbumid($uid);
 		foreach ($albumlist as &$v) {
-			$v['title'] = $aText[\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE][$v['albumid']];
-			$v['desc'] = $aText[\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC][$v['albumid']];
 			$v['isrecycle'] = $v['albumid'] == $recycleid;
 			$v['digest'] = $digest[$v['albumid']];
 			foreach ($v['digest'] as &$vv) {

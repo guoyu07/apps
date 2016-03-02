@@ -143,20 +143,16 @@ class MApi extends \Ko_Busi_Api
 
 	public function aGetBlogInfos($list)
 	{
-		$blogids = \Ko_Tool_Utils::AObjs2ids($list, 'blogid');
 		$infos = $this->blogDao->aGetDetails($list);
-		$contentApi = new \APPS\content\MFacade_Api();
-		$aText = $contentApi->aGetTextEx(array(
-			\APPS\content\MFacade_Const::BLOG_TITLE => $blogids,
-			\APPS\content\MFacade_Const::BLOG_CONTENT => array('ids' => $blogids, 'maxlength' => 1000, 'ext' => '...'),
+		\APPS\content\MFacade_Api::FillListInfo($infos, 'blogid', array(
+			\APPS\content\MFacade_Const::BLOG_TITLE => 'title',
+			\APPS\content\MFacade_Const::BLOG_CONTENT => array('field' => 'content', 'maxlength' => 1000, 'ext' => '...'),
 		));
 		foreach ($infos as &$v) {
 			if ('回收站' === $v['tags']) {
 				$v = array();
 			}
 			if (!empty($v)) {
-				$v['title'] = $aText[\APPS\content\MFacade_Const::BLOG_TITLE][$v['blogid']];
-				$v['content'] = $aText[\APPS\content\MFacade_Const::BLOG_CONTENT][$v['blogid']];
 				if (strlen($v['cover'])) {
 					$v['cover'] = \APPS\storage\MFacade_Api::getUrl($v['cover'], 'imageView2/1/w/300/h/200');
 				}

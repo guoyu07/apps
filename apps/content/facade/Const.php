@@ -13,4 +13,5 @@ class MFacade_Const
 	const PHOTO_ALBUM_DESC     = 7;
 	const PHOTO_TITLE          = 8;
 	const VIDEO_TITLE          = 9;
+	const HOLDEM_ROOM_NAME     = 10;
 }
