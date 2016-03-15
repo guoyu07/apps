@@ -1,6 +1,6 @@
 <?php
 
-define('MAIN_DOMAIN', 'zlog.cc');
+define('MAIN_DOMAIN', 'yuxiaoyan.cn');
 define('WWW_DOMAIN', 'www.' . MAIN_DOMAIN);
 define('PASSPORT_DOMAIN', 'passport.' . MAIN_DOMAIN);
 define('XHPROF_DOMAIN', 'xhprof.' . MAIN_DOMAIN);
