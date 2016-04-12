@@ -77,6 +77,12 @@
         {$colsHeight[$minindex] = $colsHeight[$minindex] + $photoimgheight + 50}
     {/foreach}
     <div id="photolist">
+        <div class="photodiv left hide" style="width: 240px;padding: 5px;">
+            <div class="photoimgdiv" style="text-align: center;position: relative;width: 240px;height: 240px;">
+            </div>
+            <div class="phototxtdiv" style="width: 240px;overflow: hidden;line-height: 30px;height: 30px;white-space: nowrap;text-align: center;font-size: 12px; color: #aaaaaa;">
+            </div>
+        </div>
 	    {for $i=0; $i<$cols; $i++}
 	    <div id="photolist_col{$i}" class="left" data-col="{$i}" style="width: 250px;">
 		    {foreach $photolist as $photo}
@@ -414,14 +420,10 @@
                         plupload.each(files, function(file) {
 	                        var photodiv = $('#photolist .photodiv:first').clone();
 	                        photodiv.attr('id', file.id);
-	                        photodiv.data('photoid', 0);
-	                        photodiv.data('imgwidth', 0);
-	                        photodiv.data('imgheight', 0);
 	                        photodiv.find('.photoimgdiv').css('height', '240px');
 	                        photodiv.find('.photoimgdiv').html('');
-	                        photodiv.find('.photocheckdiv').html('&nbsp;');
                             photodiv.find('.phototxtdiv').text('等待上传中...');
-                            photodiv.find('.photoeditdiv').html('&nbsp;');
+                            photodiv.show();
 	                        $('#photolist_col' + (pos % 4)).prepend(photodiv);
 	                        pos ++;
 
