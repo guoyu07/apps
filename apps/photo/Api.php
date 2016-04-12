@@ -12,6 +12,11 @@ class MApi extends \Ko_Busi_Api
 	public function getAlbumInfos($list)
 	{
 		$infos = $this->albumDao->aGetDetails($list);
+		foreach ($infos as $k => $v) {
+			if (empty($v)) {
+				unset($infos[$k]);
+			}
+		}
 		\APPS\content\MFacade_Api::FillListInfo($infos, 'albumid', array(
 			\APPS\content\MFacade_Const::PHOTO_ALBUM_TITLE => 'title',
 			\APPS\content\MFacade_Const::PHOTO_ALBUM_DESC => 'desc',
