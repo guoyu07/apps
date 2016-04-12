@@ -33,13 +33,13 @@
     {/if}
     <div class="clear"></div>
 
+    <div id="photoupload" class="photodiv left hide" style="width: 240px;padding: 5px;">
+        <div class="photoimgdiv" style="text-align: center;position: relative;width: 240px;height: 240px;">
+        </div>
+        <div class="phototxtdiv" style="width: 240px;overflow: hidden;line-height: 30px;height: 30px;white-space: nowrap;text-align: center;font-size: 12px; color: #aaaaaa;">
+        </div>
+    </div>
 	<div id="photolist">
-		<div class="photodiv left hide" style="width: 240px;padding: 5px;">
-			<div class="photoimgdiv" style="text-align: center;position: relative;width: 240px;height: 240px;">
-			</div>
-			<div class="phototxtdiv" style="width: 240px;overflow: hidden;line-height: 30px;height: 30px;white-space: nowrap;text-align: center;font-size: 12px; color: #aaaaaa;">
-			</div>
-		</div>
 	</div>
 	<div class="clear"></div>
 
@@ -256,7 +256,7 @@
                 init: {
                     FilesAdded: function (up, files) {
                         plupload.each(files, function(file) {
-	                        var photodiv = $('#photolist .photodiv:first').clone();
+	                        var photodiv = $('#photoupload').clone();
 	                        photodiv.attr('id', file.id);
 	                        photodiv.find('.photoimgdiv').css('height', '240px');
 	                        photodiv.find('.photoimgdiv').html('');
